@@ -1,1 +1,7 @@
 a.out
+.DStore
+*.o
+*.a
+ft_ls
+.vscode
+.objs
