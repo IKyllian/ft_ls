@@ -15,6 +15,43 @@ typedef struct s_options {
 	int listSubdir;
 }	t_options;
 
+typedef struct s_dirInfos {
+	struct stat dirStat;
+	char *dirName;
+	char **folders;
+	int isSubdir;
+	struct s_dirInfos *next;
+}	t_dirInfos;
+
+void	ft_lstadd(t_dirInfos **dirList, struct stat dirStat, char dirName[256], char ***folders, int isSubdir)
+{
+	t_dirInfos *list = *dirList;
+	t_dirInfos *new  = NULL;
+
+	new = (t_dirInfos *)malloc(sizeof(t_dirInfos));
+	new->dirName = ft_strdup(dirName);
+	new->dirStat = dirStat;
+	new->isSubdir = isSubdir;
+	new->folders = *folders; // (*folders) ?
+	new->next = NULL;
+
+	if (*dirList == NULL) {
+		*dirList = new;
+	} else {
+		// while (list) {
+		// 	if (ft_strncmp(dirName, list->dirName, ft_strlen(dirName)) < 0) {
+		// 		new->next = list->next;
+		// 		list->next = new;
+		// 	}
+		// 	list = list->next;
+		// }
+		while (list->next) {
+			list = list->next;
+		}
+		list->next = new;
+	}
+}
+
 int charIsFlag(char c) {
 	if (c == 'l' || c == 'R' || c == 'a' || c == 'r' || c == 't')
 		return (1);
@@ -78,12 +115,12 @@ int parser(char **av, t_options *options) {
 
 void fillArrayFolders(char ***folders, char *str) {
 	if ((*folders) == NULL) {
-		(*folders) = malloc(sizeof(char *) * 2);
+		(*folders) = (char **)malloc(sizeof(char *) * 2);
 		(*folders)[0] = ft_strdup(str);
 		(*folders)[1] = NULL;
 	} else {
 		int length = arrayLength((*folders));
-		char **tmp = malloc(sizeof(char *) * (length + 2));
+		char **tmp = (char **)malloc(sizeof(char *) * (length + 2));
 		int i = 0;
 		while ((*folders)[i]) {
 			tmp[i] = ft_strdup((*folders)[i]);
@@ -115,7 +152,7 @@ void printLongFormat(struct stat statBuffer) {
 	printf("%lli ", statBuffer.st_size);
 }
 
-void readFolder(t_options options, char *path, int isSubFolder) {
+void readFolder(t_options options, char *path, int isSubdir, t_dirInfos **dirList) {
 	DIR *pDir;
 	struct dirent *currentDir;
 	struct stat statBuffer;
@@ -130,8 +167,7 @@ void readFolder(t_options options, char *path, int isSubFolder) {
 		printf("Error while open\n");
 		exit(-1);
 	}
-	if (isSubFolder)
-		printf("\n%s:\n", path);
+
 	while((currentDir = readdir(pDir)) != NULL) {
 		if (str)
 			free(str);
@@ -140,18 +176,15 @@ void readFolder(t_options options, char *path, int isSubFolder) {
 			printf("Error while Stat\n");
 			exit(-1);
 		}
-		if (options.longFormat) {
-			printLongFormat(statBuffer);
-		}
-		printf("%s \n", currentDir->d_name);
 		if (options.listSubdir && S_ISDIR(statBuffer.st_mode) && !isUntrackFolder(currentDir->d_name)) {
 			fillArrayFolders(&folders, str);
 		}
+		ft_lstadd(dirList, statBuffer, currentDir->d_name, &folders, isSubdir);
 	}
 	if (options.listSubdir && folders != NULL) {
 		int i = 0;
 		while (folders[i]) {
-			readFolder(options, folders[i], 1);
+			readFolder(options, folders[i], 1, dirList);
 			i++;
 		}
 	}
@@ -162,6 +195,8 @@ int main(int ac, char **av) {
 	t_options options;
 	int pathIndex = 1;
 
+	t_dirInfos *dirList = NULL;
+
 	options.longFormat = 0;
 	options.reverse = 0;
 	options.showHidden = 0;
@@ -170,7 +205,17 @@ int main(int ac, char **av) {
 		pathIndex = parser(av, &options);
 	}
 
-	readFolder(options, av[pathIndex], 0);
+	readFolder(options, av[pathIndex], 0, &dirList);
+
+	while (dirList) {
+		// if (dirList->isSubdir)
+		// 	printf("\n%s:\n", dirList->dirName);
+		if (options.longFormat) {
+			printLongFormat(dirList->dirStat);
+		}
+		printf("%s \n", dirList->dirName);
+		dirList = dirList->next;
+	}
 
     return (0);
 }
