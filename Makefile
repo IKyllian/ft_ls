@@ -3,7 +3,8 @@ LIB_NAME = libft.a
 
 HEADER = ./inc/ft_ls.h
 LIB_PATH = ./libft/
-LST_SRCS =  main.c
+LST_SRCS =  main.c \
+			utils.c
 		
 LST_OBJS = $(LST_SRCS:.c=.o)
 
@@ -15,7 +16,6 @@ DIR_FILES = srcs
 DIR_OBJS = .objs
 
 LST	= 
-
 
 SRCS = $(addprefix $(DIR_FILES)/,$(LST_SRCS))
 OBJS = $(addprefix $(DIR_OBJS)/,$(LST_OBJS))
