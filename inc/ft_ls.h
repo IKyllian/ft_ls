@@ -32,5 +32,6 @@ int charIsFlag(char c);
 int arrayLength(char **array);
 void fillOptions(char c, t_options *options);
 int isUntrackFolder(char *str);
+int ishiddenFolder(char *str);
 
 #endif

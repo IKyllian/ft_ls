@@ -33,3 +33,9 @@ int isUntrackFolder(char *str) {
 		return (1);
 	return (0);
 }
+
+int ishiddenFolder(char *str) {
+	if (ft_strlen(str) > 0 && str[0] == '.')
+		return (1);
+	return (0);
+}
