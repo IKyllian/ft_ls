@@ -1,5 +1,13 @@
 #include "ft_ls.h"
 
+void resetColor() {
+  printf("\033[0m");
+}
+
+void blueColor() {
+  printf("\033[1;36m");
+}
+
 void freeLst(t_dirInfos **dirList) {
 	t_dirInfos *list = *dirList;
 	t_dirInfos *next;
@@ -18,7 +26,7 @@ void freeLst(t_dirInfos **dirList) {
 	}
 }
 
-t_dirInfos *ft_lstadd(t_dirInfos **dirList, struct stat dirStat, char dirName[256], char *path, int isSubdir, int *isFirstDir) {
+t_dirInfos *ft_lstadd(t_dirInfos **dirList, struct stat dirStat, char dirName[256], char *path, int isSubdir, int *isFirstDir, int isReverse) {
 	t_dirInfos *list = *dirList;
 	t_dirInfos *last  = NULL;
 	t_dirInfos *new  = NULL;
@@ -30,6 +38,7 @@ t_dirInfos *ft_lstadd(t_dirInfos **dirList, struct stat dirStat, char dirName[25
 	new->isSubdir = isSubdir;
 	new->subDir = NULL;
 	new->next = NULL;
+	(void)isReverse;
 
 	if (*dirList == NULL) {
 		*dirList = new;
@@ -42,6 +51,13 @@ t_dirInfos *ft_lstadd(t_dirInfos **dirList, struct stat dirStat, char dirName[25
 	}
 	while (list) {
 		if (strcmp(dirName, list->dirName) < 0) {
+			new->next = list;
+			if (last != NULL)
+				last->next = new;
+			else
+				*dirList = new;
+			return (new);
+		} else if (isReverse && strcmp(dirName, list->dirName) > 0) {
 			new->next = list;
 			if (last != NULL)
 				last->next = new;
@@ -99,21 +115,61 @@ int parser(char **av, t_options *options) {
 
 // }
 
-void printLongFormat(struct stat statBuffer) {
-	struct group *myGroup;
+void setPermision(struct stat dirStat, char **str) {
+	if (S_ISDIR(dirStat.st_mode))
+		(*str)[0] = 'd';
+	if (dirStat.st_mode & S_IRUSR )
+        (*str)[1] = 'r';
+    if (dirStat.st_mode & S_IWUSR )
+        (*str)[2] = 'w';
+    if (dirStat.st_mode & S_IXUSR )
+        (*str)[3] = 'x';
 
-	myGroup = getgrgid(statBuffer.st_gid);
-	if (myGroup == NULL) {
+    if (dirStat.st_mode & S_IRGRP )
+        (*str)[4] = 'r';
+    if (dirStat.st_mode & S_IWGRP )
+        (*str)[5] = 'w';
+    if (dirStat.st_mode & S_IXGRP )
+        (*str)[6] = 'x';
+
+    if (dirStat.st_mode & S_IROTH )
+        (*str)[7] = 'r';
+    if (dirStat.st_mode & S_IWOTH )
+        (*str)[8] = 'w';
+    if (dirStat.st_mode & S_IXOTH )
+    	(*str)[9] = 'x';
+}
+
+void printLongFormat(struct stat statBuffer) {
+	struct group *groupInfos;
+	struct passwd *ownerInfos;
+	char *permisions;
+	char *dirTime;
+
+	permisions = (char *)malloc(sizeof(char) * 11);
+	int i = 0;
+	while (i < 11) {
+		if (i == 10)
+			permisions[i] = '\0';
+		else
+			permisions[i] = '-';
+		i++;
+	}
+
+	setPermision(statBuffer, &permisions);
+	groupInfos = getgrgid(statBuffer.st_gid);
+	ownerInfos = getpwuid(statBuffer.st_uid);
+	dirTime = ctime(&statBuffer.st_mtimespec.tv_sec);
+	if (groupInfos == NULL) {
 		printf("Error or not found while Getgrgid\n");
-		free(myGroup);
+		free(groupInfos);
 		exit(-1);
 	}
+	printf("%s ", permisions);
 	printf("%i ", statBuffer.st_nlink);
-	if (myGroup->gr_mem[0])
-		printf("%s ", myGroup->gr_mem[0]);
-	printf("%s ", myGroup->gr_name);
+	printf("%s ", ownerInfos->pw_name);
+	printf("%s ", groupInfos->gr_name);
 	printf("%lli ", statBuffer.st_size);
-	char *dirTime = ctime(&statBuffer.st_mtimespec.tv_sec);
 	if (dirTime[ft_strlen(dirTime) - 1] == '\n')
 		dirTime[ft_strlen(dirTime) - 1] = '\0';
 	printf("%s ", dirTime);
@@ -156,11 +212,12 @@ t_dirInfos *readFolder(t_options options, char *path, int isSubdir, t_dirInfos *
 		}
 	
 		if (isSubdir && isFirstDir) {
-			ret = ft_lstadd(&list, statBuffer, currentDir->d_name, str, isSubdir, &isFirstDir);
+			ret = ft_lstadd(&list, statBuffer, currentDir->d_name, str, isSubdir, &isFirstDir, options.reverse);
 			list = list->subDir;
 		} else {
-			ret = ft_lstadd(&list, statBuffer, currentDir->d_name, str, isSubdir, &isFirstDir);
+			ret = ft_lstadd(&list, statBuffer, currentDir->d_name, str, isSubdir, &isFirstDir, options.reverse);
 		}
+		// printf("\n LIST = %s\n", list->dirName);
 		if (options.listSubdir && S_ISDIR(statBuffer.st_mode) && !isUntrackFolder(currentDir->d_name)) {
 			readFolder(options, str, 1, &ret);
 		}
@@ -186,7 +243,11 @@ void printList(t_dirInfos **dirList, t_options options, int isSub) {
 	while (list) {
 		if (options.longFormat)
 			printLongFormat(list->dirStat);
+		if (S_ISDIR(list->dirStat.st_mode))
+			blueColor();
 		printf("%s \n", list->dirName);
+		if (S_ISDIR(list->dirStat.st_mode))
+			resetColor();
 		list = list->next;
 	}
 

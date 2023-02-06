@@ -11,6 +11,7 @@
 # include <grp.h>
 # include <string.h>
 # include <time.h>
+# include <pwd.h>
 # include "libft.h"
 
 typedef struct s_options {
