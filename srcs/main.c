@@ -83,6 +83,22 @@ int parser(char **av, t_options *options) {
 	return (-1);
 }
 
+// char *dateFormat(char *date) {
+// 	char *newFormat;
+// 	int i = 0;
+// 	int length = 0;
+// 	int space = 0;
+
+// 	while (date[i]) {
+// 		if (date[i] = ' ')
+// 			space++;
+// 		if (space == 1)
+// 			length
+// 		i++;
+// 	}
+
+// }
+
 void printLongFormat(struct stat statBuffer) {
 	struct group *myGroup;
 
@@ -97,6 +113,10 @@ void printLongFormat(struct stat statBuffer) {
 		printf("%s ", myGroup->gr_mem[0]);
 	printf("%s ", myGroup->gr_name);
 	printf("%lli ", statBuffer.st_size);
+	char *dirTime = ctime(&statBuffer.st_mtimespec.tv_sec);
+	if (dirTime[ft_strlen(dirTime) - 1] == '\n')
+		dirTime[ft_strlen(dirTime) - 1] = '\0';
+	printf("%s ", dirTime);
 }
 
 t_dirInfos *readFolder(t_options options, char *path, int isSubdir, t_dirInfos **dirList) {

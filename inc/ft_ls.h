@@ -10,6 +10,7 @@
 # include <unistd.h>
 # include <grp.h>
 # include <string.h>
+# include <time.h>
 # include "libft.h"
 
 typedef struct s_options {
