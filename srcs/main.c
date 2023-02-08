@@ -26,7 +26,7 @@ void freeLst(t_dirInfos **dirList) {
 	}
 }
 
-t_dirInfos *ft_lstadd(t_dirInfos **dirList, struct stat dirStat, char dirName[256], char *path, int isSubdir, int *isFirstDir, int isReverse) {
+t_dirInfos *ft_lstadd(t_dirInfos **dirList, struct stat dirStat, char dirName[256], char *path, int isSubdir, int *isFirstDir, int isReverse, t_dirInfos **dirParent) {
 	t_dirInfos *list = *dirList;
 	t_dirInfos *last  = NULL;
 	t_dirInfos *new  = NULL;
@@ -38,37 +38,41 @@ t_dirInfos *ft_lstadd(t_dirInfos **dirList, struct stat dirStat, char dirName[25
 	new->isSubdir = isSubdir;
 	new->subDir = NULL;
 	new->next = NULL;
+	new->blocksSize = 0;
 	(void)isReverse;
 
 	if (*dirList == NULL) {
+		new->blocksSize += dirStat.st_blocks;
 		*dirList = new;
 		*isFirstDir = 0;
 		return (*dirList);
 	 } else if (*isFirstDir) {
+		new->blocksSize += dirStat.st_blocks;
 		list->subDir = new;
 		*isFirstDir = 0;
 		return (new);
 	}
 	while (list) {
-		if (strcmp(dirName, list->dirName) < 0) {
+		if ((!isReverse && strcmp(dirName, list->dirName) < 0) || (isReverse && strcmp(dirName, list->dirName) > 0)) {
 			new->next = list;
 			if (last != NULL)
 				last->next = new;
-			else
+			else {
+				new->blocksSize = list->blocksSize;
+				new->blocksSize += new->dirStat.st_blocks;
+				if (*dirParent)
+					(*dirParent)->subDir = new;
 				*dirList = new;
-			return (new);
-		} else if (isReverse && strcmp(dirName, list->dirName) > 0) {
-			new->next = list;
-			if (last != NULL)
-				last->next = new;
-			else
-				*dirList = new;
+				return (new);
+			}
+			(*dirList)->blocksSize += new->dirStat.st_blocks;
 			return (new);
 		}
 		last = list;
 		list = list->next;
 	}
 	last->next = new;
+	(*dirList)->blocksSize += new->dirStat.st_blocks;
 	return (new);
 }
 
@@ -148,13 +152,11 @@ void printLongFormat(struct stat statBuffer) {
 
 	permisions = (char *)malloc(sizeof(char) * 11);
 	int i = 0;
-	while (i < 11) {
-		if (i == 10)
-			permisions[i] = '\0';
-		else
-			permisions[i] = '-';
+	while (i < 10) {
+		permisions[i] = '-';
 		i++;
 	}
+	permisions[i] = '\0';
 
 	setPermision(statBuffer, &permisions);
 	groupInfos = getgrgid(statBuffer.st_gid);
@@ -175,6 +177,48 @@ void printLongFormat(struct stat statBuffer) {
 	printf("%s ", dirTime);
 }
 
+void printList(t_dirInfos **dirList, t_options options, int isSub) {
+	t_dirInfos *list = *dirList;
+	t_dirInfos *head = *dirList;
+
+	if (isSub) {
+		printf("\n%s:\n", list->path);
+		list = list->subDir;
+		head = head->subDir;
+	}
+	if (options.longFormat && list) {
+		printf("total %lli\n", list->blocksSize);
+	}
+
+	while (list) {
+		if (options.longFormat)
+			printLongFormat(list->dirStat);
+		if (S_ISDIR(list->dirStat.st_mode))
+			blueColor();
+		printf("%s \n", list->dirName);
+		if (S_ISDIR(list->dirStat.st_mode))
+			resetColor();
+		list = list->next;
+	}
+
+	while (head) {
+		if (head->subDir)
+			printList(&head, options, 1);
+		head = head->next;
+	}
+}
+
+void printDebug(t_dirInfos **dirList) {
+	t_dirInfos *list = *dirList;
+
+	printf("\n DEBUG:\n");
+	while (list) {
+		printf("%s \n",list->dirName);
+		list = list->next;
+	}
+	printf("\n");
+}
+
 t_dirInfos *readFolder(t_options options, char *path, int isSubdir, t_dirInfos **dirList) {
 	DIR *pDir;
 	struct dirent *currentDir;
@@ -182,6 +226,7 @@ t_dirInfos *readFolder(t_options options, char *path, int isSubdir, t_dirInfos *
 	int isFirstDir = 1;
 	t_dirInfos *list = *dirList;
 	t_dirInfos *ret;
+	t_dirInfos *dirParent = NULL;
 	char *str = NULL;
 	char *firstStr;
 
@@ -212,12 +257,12 @@ t_dirInfos *readFolder(t_options options, char *path, int isSubdir, t_dirInfos *
 		}
 	
 		if (isSubdir && isFirstDir) {
-			ret = ft_lstadd(&list, statBuffer, currentDir->d_name, str, isSubdir, &isFirstDir, options.reverse);
+			ret = ft_lstadd(&list, statBuffer, currentDir->d_name, str, isSubdir, &isFirstDir, options.reverse, &dirParent);
+			dirParent = list;
 			list = list->subDir;
 		} else {
-			ret = ft_lstadd(&list, statBuffer, currentDir->d_name, str, isSubdir, &isFirstDir, options.reverse);
+			ret = ft_lstadd(&list, statBuffer, currentDir->d_name, str, isSubdir, &isFirstDir, options.reverse, &dirParent);
 		}
-		// printf("\n LIST = %s\n", list->dirName);
 		if (options.listSubdir && S_ISDIR(statBuffer.st_mode) && !isUntrackFolder(currentDir->d_name)) {
 			readFolder(options, str, 1, &ret);
 		}
@@ -228,34 +273,6 @@ t_dirInfos *readFolder(t_options options, char *path, int isSubdir, t_dirInfos *
 		free(firstStr);
 	closedir(pDir);
 	return (list);
-}
-
-void printList(t_dirInfos **dirList, t_options options, int isSub) {
-	t_dirInfos *list = *dirList;
-	t_dirInfos *head = *dirList;
-
-	if (isSub) {
-		printf("\n%s:\n", list->path);
-		list = list->subDir;
-		head = head->subDir;
-	}
-
-	while (list) {
-		if (options.longFormat)
-			printLongFormat(list->dirStat);
-		if (S_ISDIR(list->dirStat.st_mode))
-			blueColor();
-		printf("%s \n", list->dirName);
-		if (S_ISDIR(list->dirStat.st_mode))
-			resetColor();
-		list = list->next;
-	}
-
-	while (head) {
-		if (head->subDir)
-			printList(&head, options, 1);
-		head = head->next;
-	}
 }
 
 int main(int ac, char **av) {	

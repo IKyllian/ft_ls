@@ -26,6 +26,7 @@ typedef struct s_dirInfos {
 	char *dirName;
 	char *path;
 	int isSubdir;
+	blkcnt_t blocksSize;
 	struct s_dirInfos *subDir;
 	struct s_dirInfos *next;
 }	t_dirInfos;
