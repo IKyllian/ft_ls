@@ -1,11 +1,15 @@
 #include "ft_ls.h"
 
-void resetColor() {
-  printf("\033[0m");
-}
+int		integer_len(int n)
+{
+	int		len;
 
-void blueColor() {
-  printf("\033[1;36m");
+	len = 1;
+	while (n / 10) {
+		n /= 10;
+		++len;
+	}
+	return (len);
 }
 
 void freeLst(t_dirInfos **dirList) {
@@ -20,26 +24,49 @@ void freeLst(t_dirInfos **dirList) {
 			free(list->path);
 		if (list->dirName)
 			free(list->dirName);
+		if (list->owner)
+			free(list->owner);
+		if (list->gr_name)
+			free(list->gr_name);
 		next = list->next;
 		free(list);
 		list = next;
 	}
 }
 
-t_dirInfos *ft_lstadd(t_dirInfos **dirList, struct stat dirStat, char dirName[256], char *path, int isSubdir, int *isFirstDir, int isReverse, t_dirInfos **dirParent) {
+void setColumnSize(int size[SIZE_LENGTH], t_dirInfos *dir) {
+	size[0] = MAX(integer_len(dir->dirStat.st_nlink), size[0]);
+	size[1] = MAX(ft_strlen(dir->owner), size[1]);
+	size[2] = MAX(ft_strlen(dir->gr_name), size[2]);
+	size[3] = MAX(integer_len(dir->dirStat.st_size), size[3]);
+}
+
+t_dirInfos *ft_lstadd(t_dirInfos **dirList, struct stat dirStat, char dirName[256], char *path, int isSubdir, int *isFirstDir, int isReverse, t_dirInfos **dirParent, int size[SIZE_LENGTH]) {
 	t_dirInfos *list = *dirList;
 	t_dirInfos *last  = NULL;
 	t_dirInfos *new  = NULL;
+	struct group *groupInfos;
+	struct passwd *ownerInfos;
 
+	groupInfos = getgrgid(dirStat.st_gid);
+
+	if (groupInfos == NULL) {
+		printf("Error or not found while Getgrgid\n");
+		exit(-1);
+	}
+	ownerInfos = getpwuid(dirStat.st_uid);
 	new = (t_dirInfos *)malloc(sizeof(t_dirInfos));
 	new->dirName = ft_strdup(dirName);
 	new->path = ft_strdup(path);
+	new->owner = ft_strdup(ownerInfos->pw_name);
+	new->gr_name = ft_strdup(groupInfos->gr_name);
 	new->dirStat = dirStat;
 	new->isSubdir = isSubdir;
 	new->subDir = NULL;
 	new->next = NULL;
 	new->blocksSize = 0;
-	(void)isReverse;
+
+	setColumnSize(size, new);
 
 	if (*dirList == NULL) {
 		new->blocksSize += dirStat.st_blocks;
@@ -103,81 +130,72 @@ int parser(char **av, t_options *options) {
 	return (-1);
 }
 
-// char *dateFormat(char *date) {
-// 	char *newFormat;
-// 	int i = 0;
-// 	int length = 0;
-// 	int space = 0;
-
-// 	while (date[i]) {
-// 		if (date[i] = ' ')
-// 			space++;
-// 		if (space == 1)
-// 			length
-// 		i++;
-// 	}
-
-// }
-
-void setPermision(struct stat dirStat, char **str) {
-	if (S_ISDIR(dirStat.st_mode))
-		(*str)[0] = 'd';
-	if (dirStat.st_mode & S_IRUSR )
-        (*str)[1] = 'r';
-    if (dirStat.st_mode & S_IWUSR )
-        (*str)[2] = 'w';
-    if (dirStat.st_mode & S_IXUSR )
-        (*str)[3] = 'x';
-
-    if (dirStat.st_mode & S_IRGRP )
-        (*str)[4] = 'r';
-    if (dirStat.st_mode & S_IWGRP )
-        (*str)[5] = 'w';
-    if (dirStat.st_mode & S_IXGRP )
-        (*str)[6] = 'x';
-
-    if (dirStat.st_mode & S_IROTH )
-        (*str)[7] = 'r';
-    if (dirStat.st_mode & S_IWOTH )
-        (*str)[8] = 'w';
-    if (dirStat.st_mode & S_IXOTH )
-    	(*str)[9] = 'x';
+char setFileType(mode_t mode) {
+	if (S_ISREG(mode))
+		return ('-');
+	else if (S_ISDIR(mode))
+		return ('d');
+	else if (S_ISLNK(mode))
+		return ('l');
+	else if (S_ISBLK(mode))
+		return ('b');
+	else if (S_ISCHR(mode))
+		return ('c');
+	else if (S_ISSOCK(mode))
+		return ('s');
+	else if (S_ISFIFO(mode))
+		return ('p');
+	else
+		return ('-');
 }
 
-void printLongFormat(struct stat statBuffer) {
-	struct group *groupInfos;
-	struct passwd *ownerInfos;
-	char *permisions;
-	char *dirTime;
+void setPermision(struct stat dirStat, char str[SIZE_PERM]) {
 
-	permisions = (char *)malloc(sizeof(char) * 11);
+	str[0] = setFileType(dirStat.st_mode);
+	if (dirStat.st_mode & S_IRUSR )
+        str[1] = 'r';
+    if (dirStat.st_mode & S_IWUSR )
+        str[2] = 'w';
+    if (dirStat.st_mode & S_IXUSR )
+        str[3] = 'x';
+
+    if (dirStat.st_mode & S_IRGRP )
+        str[4] = 'r';
+    if (dirStat.st_mode & S_IWGRP )
+        str[5] = 'w';
+    if (dirStat.st_mode & S_IXGRP )
+        str[6] = 'x';
+
+    if (dirStat.st_mode & S_IROTH )
+        str[7] = 'r';
+    if (dirStat.st_mode & S_IWOTH )
+        str[8] = 'w';
+    if (dirStat.st_mode & S_IXOTH )
+    	str[9] = 'x';
+}
+
+void printLongFormat(t_dirInfos *dir, int size[SIZE_LENGTH]) {
+	char permisions[SIZE_PERM];
+	char *dirTime;
 	int i = 0;
+
 	while (i < 10) {
 		permisions[i] = '-';
 		i++;
 	}
 	permisions[i] = '\0';
+	setPermision(dir->dirStat, permisions);
+	dirTime = ctime(&dir->dirStat.st_mtimespec.tv_sec) + 4;
 
-	setPermision(statBuffer, &permisions);
-	groupInfos = getgrgid(statBuffer.st_gid);
-	ownerInfos = getpwuid(statBuffer.st_uid);
-	dirTime = ctime(&statBuffer.st_mtimespec.tv_sec);
-	if (groupInfos == NULL) {
-		printf("Error or not found while Getgrgid\n");
-		free(groupInfos);
-		exit(-1);
-	}
 	printf("%s ", permisions);
-	printf("%i ", statBuffer.st_nlink);
-	printf("%s ", ownerInfos->pw_name);
-	printf("%s ", groupInfos->gr_name);
-	printf("%lli ", statBuffer.st_size);
-	if (dirTime[ft_strlen(dirTime) - 1] == '\n')
-		dirTime[ft_strlen(dirTime) - 1] = '\0';
-	printf("%s ", dirTime);
+	printf("%*i ", size[0], dir->dirStat.st_nlink);
+	printf("%-*s ", size[1], dir->owner);
+	printf(" %-*s ", size[2], dir->gr_name);
+	printf(" %*lli ", size[3], dir->dirStat.st_size);
+	printf("%.12s ", dirTime);
 }
 
-void printList(t_dirInfos **dirList, t_options options, int isSub) {
+void printList(t_dirInfos **dirList, t_options options, int isSub, int size[SIZE_LENGTH]) {
 	t_dirInfos *list = *dirList;
 	t_dirInfos *head = *dirList;
 
@@ -192,34 +210,22 @@ void printList(t_dirInfos **dirList, t_options options, int isSub) {
 
 	while (list) {
 		if (options.longFormat)
-			printLongFormat(list->dirStat);
+			printLongFormat(list, size);
 		if (S_ISDIR(list->dirStat.st_mode))
-			blueColor();
-		printf("%s \n", list->dirName);
-		if (S_ISDIR(list->dirStat.st_mode))
-			resetColor();
+			printf("%s%s%s \n", COLOR_CYAN, list->dirName, COLOR_DEFAULT);
+		else
+			printf("%s \n", list->dirName);
 		list = list->next;
 	}
 
 	while (head) {
 		if (head->subDir)
-			printList(&head, options, 1);
+			printList(&head, options, 1, size);
 		head = head->next;
 	}
 }
 
-void printDebug(t_dirInfos **dirList) {
-	t_dirInfos *list = *dirList;
-
-	printf("\n DEBUG:\n");
-	while (list) {
-		printf("%s \n",list->dirName);
-		list = list->next;
-	}
-	printf("\n");
-}
-
-t_dirInfos *readFolder(t_options options, char *path, int isSubdir, t_dirInfos **dirList) {
+t_dirInfos *readFolder(t_options options, char *path, int isSubdir, t_dirInfos **dirList, int size[SIZE_LENGTH]) {
 	DIR *pDir;
 	struct dirent *currentDir;
 	struct stat statBuffer;
@@ -257,14 +263,14 @@ t_dirInfos *readFolder(t_options options, char *path, int isSubdir, t_dirInfos *
 		}
 	
 		if (isSubdir && isFirstDir) {
-			ret = ft_lstadd(&list, statBuffer, currentDir->d_name, str, isSubdir, &isFirstDir, options.reverse, &dirParent);
+			ret = ft_lstadd(&list, statBuffer, currentDir->d_name, str, isSubdir, &isFirstDir, options.reverse, &dirParent, size);
 			dirParent = list;
 			list = list->subDir;
 		} else {
-			ret = ft_lstadd(&list, statBuffer, currentDir->d_name, str, isSubdir, &isFirstDir, options.reverse, &dirParent);
+			ret = ft_lstadd(&list, statBuffer, currentDir->d_name, str, isSubdir, &isFirstDir, options.reverse, &dirParent, size);
 		}
 		if (options.listSubdir && S_ISDIR(statBuffer.st_mode) && !isUntrackFolder(currentDir->d_name)) {
-			readFolder(options, str, 1, &ret);
+			readFolder(options, str, 1, &ret, size);
 		}
 		if (str)
 			free(str);
@@ -279,22 +285,24 @@ int main(int ac, char **av) {
 	t_options options;
 	int pathIndex = -1;
 	t_dirInfos *dirList = NULL;
+	int size[SIZE_LENGTH];
 
 	options.longFormat = 0;
 	options.reverse = 0;
 	options.showHidden = 0;
 	options.listSubdir = 0;
+	ft_bzero(size, sizeof(size));
 	if (ac > 1) {
 		pathIndex = parser(av, &options);
 	}
 
 	if (pathIndex > 0) {
-		dirList = readFolder(options, av[pathIndex], 0, &dirList);
+		dirList = readFolder(options, av[pathIndex], 0, &dirList, size);
 	} else {
-		dirList = readFolder(options, ".", 0, &dirList);
+		dirList = readFolder(options, ".", 0, &dirList, size);
 	}
 
-	printList(&dirList, options, 0);
+	printList(&dirList, options, 0, size);
 	freeLst(&dirList);
 
     return (0);

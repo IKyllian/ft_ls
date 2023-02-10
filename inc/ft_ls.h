@@ -14,6 +14,15 @@
 # include <pwd.h>
 # include "libft.h"
 
+#define SIZE_LENGTH 4
+#define SIZE_PERM 11
+
+# define COLOR_DEFAULT	"\033[0m"
+# define COLOR_CYAN		"\033[1;36m"
+
+# define MAX(a, b)			b & ((a - b) >> 31) | a & (~(a - b) >> 31)
+# define MIN(a, b)			a & ((a - b) >> 31) | b & (~(a - b) >> 31)
+
 typedef struct s_options {
 	int reverse;
 	int showHidden;
@@ -25,6 +34,8 @@ typedef struct s_dirInfos {
 	struct stat dirStat;
 	char *dirName;
 	char *path;
+	char *owner;
+	char *gr_name;
 	int isSubdir;
 	blkcnt_t blocksSize;
 	struct s_dirInfos *subDir;
