@@ -4,7 +4,11 @@ LIB_NAME = libft.a
 HEADER = ./inc/ft_ls.h
 LIB_PATH = ./libft/
 LST_SRCS =  main.c \
-			utils.c
+			utils.c \
+			dir_infos.c \
+			mem_utils.c \
+			print.c \
+			struct_utils.c
 		
 LST_OBJS = $(LST_SRCS:.c=.o)
 
