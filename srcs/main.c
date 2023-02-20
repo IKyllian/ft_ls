@@ -26,8 +26,8 @@ int parser(char **av, t_options *options) {
 				isFlag = 1;
 			} else if (isFlag) {
 				if (!charIsFlag(av[i][j])) {
-					printf("ft_ls : invalid option -- %c\n", av[i][j]);
-					printf("usage: ls [-Ralrt] [file ...] \n");
+					ft_printf("ft_ls : invalid option -- %c\n", av[i][j]);
+					ft_printf("usage: ls [-Ralrt] [file ...] \n");
 					return (-1);
 				}
 				fillOptions(av[i][j], options);
@@ -70,7 +70,7 @@ t_dirInfos *readFolder(t_datas *datas, char *path, int isSubdir, t_dirInfos **di
 		str = ft_strjoin(firstStr, currentDir->d_name);
 		mem_check(str, dirList);
 		if (stat(str, &statBuffer) < 0) {
-			printf("Error while Stat\n");
+			ft_printf("Error while Stat\n");
 			if (firstStr)
 				free(firstStr);
 			if (str)

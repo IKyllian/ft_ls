@@ -12,24 +12,6 @@
 
 #include "libft.h"
 
-static	int	nbr_length(long nbr)
-{
-	int	length;
-
-	length = 0;
-	if (nbr < 0)
-	{
-		nbr *= -1;
-		length++;
-	}
-	while (nbr > 10)
-	{
-		nbr /= 10;
-		length++;
-	}
-	return (++length);
-}
-
 static	void	check_negative(char *str, int *index, long *nbr)
 {
 	if (*nbr < 0)

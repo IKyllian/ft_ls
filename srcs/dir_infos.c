@@ -1,8 +1,8 @@
 #include "ft_ls.h"
 
 void setPermision(struct stat dirStat, char str[SIZE_PERM]) {
-
 	str[0] = setFileType(dirStat.st_mode);
+	
 	if (dirStat.st_mode & S_IRUSR )
         str[1] = 'r';
     if (dirStat.st_mode & S_IWUSR )
