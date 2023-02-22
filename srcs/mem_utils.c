@@ -1,13 +1,15 @@
 #include "ft_ls.h"
 
-void freeLst(t_dirInfos **dirList) {
-	t_dirInfos *list = *dirList;
-	t_dirInfos *next;
+void	freeLst(t_dirInfos **dirList)
+{
+	t_dirInfos	*list;
+	t_dirInfos	*next;
 
-	while (list) {
-		if (list->subDir) {
+	list = *dirList;
+	while (list)
+	{
+		if (list->subDir)
 			freeLst(&list->subDir);
-		}
 		if (list->path)
 			free(list->path);
 		if (list->dirName)
@@ -22,7 +24,8 @@ void freeLst(t_dirInfos **dirList) {
 	}
 }
 
-void mem_check(void *pointer, t_dirInfos **dirList) {
+void	mem_check(void *pointer, t_dirInfos **dirList)
+{
 	if (pointer == NULL) {
 		freeLst(dirList);
 		exit(-1);

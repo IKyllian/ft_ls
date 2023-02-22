@@ -17,6 +17,9 @@
 # include <unistd.h>
 # include <stdarg.h>
 
+# define MAX(a, b)	b & ((a - b) >> 31) | a & (~(a - b) >> 31)
+# define MIN(a, b)	a & ((a - b) >> 31) | b & (~(a - b) >> 31)
+
 typedef struct s_list
 {
 	void			*content;
@@ -43,7 +46,7 @@ int					ft_isascii(int c);
 int					ft_isprint(int c);
 int					ft_toupper(int c);
 int					ft_tolower(int c);
-int					nbr_length(long nbr);
+int					integer_length(long nbr);
 size_t				ft_strlen(const char *s);
 int					ft_atoi(const char *nptr);
 void				ft_bzero(void *s, size_t n);

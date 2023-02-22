@@ -35,7 +35,7 @@ void	to_decimal(va_list list, int *count, t_flags *flags)
 
 	check_space_is_neg(flags);
 	nbr = va_arg(list, int);
-	arg_len = nbr_length(nbr);
+	arg_len = integer_length(nbr);
 	if (nbr == 0 && flags->has_dot && !flags->dot_val && !flags->len_field)
 		return ;
 	ope_dot(flags, count, nbr, &arg_len);

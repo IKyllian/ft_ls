@@ -8,7 +8,8 @@ LST_SRCS =  main.c \
 			dir_infos.c \
 			mem_utils.c \
 			print.c \
-			struct_utils.c
+			struct_utils.c \
+			parser.c
 		
 LST_OBJS = $(LST_SRCS:.c=.o)
 

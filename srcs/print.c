@@ -1,12 +1,14 @@
 #include "ft_ls.h"
 
-void printLongFormat(t_dirInfos *dir, int size[SIZE_LENGTH]) {
+void	printLongFormat(t_dirInfos *dir, int size[SIZE_LENGTH])
+{
 	char	permisions[SIZE_PERM];
 	char	*dirTime;
 	int		i;
 
 	i = 0;
-	while (i < 10) {
+	while (i < 10)
+	{
 		permisions[i] = '-';
 		i++;
 	}
@@ -22,22 +24,30 @@ void printLongFormat(t_dirInfos *dir, int size[SIZE_LENGTH]) {
 	ft_printf("%.12s ", dirTime);
 }
 
-void printList(t_dirInfos **dirList, t_datas *datas, int isSub) {
+void	printDirInfos(int isSub, t_dirInfos **list, t_dirInfos	**head, t_datas *datas)
+{
+	if (isSub)
+	{
+		ft_printf("\n%s:\n", (*list)->path);
+		(*list) = (*list)->subDir;
+		(*head) = (*head)->subDir;
+	}
+	if (datas->options.longFormat && (*list))
+	{
+		ft_printf("total %i\n", (*list)->blocksSize);
+	}
+}
+
+void	printList(t_dirInfos **dirList, t_datas *datas, int isSub)
+{
 	t_dirInfos	*list;
 	t_dirInfos	*head;
 
 	list = *dirList;
 	head = *dirList;
-	if (isSub) {
-		ft_printf("\n%s:\n", list->path);
-		list = list->subDir;
-		head = head->subDir;
-	}
-	if (datas->options.longFormat && list) {
-		ft_printf("total %i\n", list->blocksSize);
-	}
-
-	while (list) {
+	printDirInfos(isSub, &list, &head, datas);
+	while (list)
+	{
 		if (datas->options.longFormat)
 			printLongFormat(list, datas->size);
 		// if (S_ISDIR(list->dirStat.st_mode))
@@ -47,7 +57,8 @@ void printList(t_dirInfos **dirList, t_datas *datas, int isSub) {
 		list = list->next;
 	}
 
-	while (head) {
+	while (head)
+	{
 		if (head->subDir)
 			printList(&head, datas, 1);
 		head = head->next;

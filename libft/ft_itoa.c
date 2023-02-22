@@ -32,7 +32,7 @@ char	*ft_itoa(int n)
 	i = 0;
 	x = 0;
 	nbr = n;
-	str = (char *)malloc(sizeof(*str) * (nbr_length(n) + 1));
+	str = (char *)malloc(sizeof(*str) * (integer_length(n) + 1));
 	if (!str)
 		return (NULL);
 	if (nbr == 0)

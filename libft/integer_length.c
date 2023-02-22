@@ -1,6 +1,6 @@
 #include "libft.h"
 
-int nbr_length(long nbr)
+int integer_length(long nbr)
 {
 	int			length;
 	long long	l_nbr;

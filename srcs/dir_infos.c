@@ -1,6 +1,7 @@
 #include "ft_ls.h"
 
-void setPermision(struct stat dirStat, char str[SIZE_PERM]) {
+void setPermision(struct stat dirStat, char str[SIZE_PERM])
+{
 	str[0] = setFileType(dirStat.st_mode);
 	
 	if (dirStat.st_mode & S_IRUSR )
@@ -25,7 +26,8 @@ void setPermision(struct stat dirStat, char str[SIZE_PERM]) {
     	str[9] = 'x';
 }
 
-char setFileType(mode_t mode) {
+char setFileType(mode_t mode)
+{
 	if (S_ISREG(mode))
 		return ('-');
 	else if (S_ISDIR(mode))
@@ -44,9 +46,10 @@ char setFileType(mode_t mode) {
 		return ('-');
 }
 
-void setColumnSize(int size[SIZE_LENGTH], t_dirInfos *dir) {
-	size[0] = MAX(integer_len(dir->dirStat.st_nlink), size[0]);
+void setColumnSize(int size[SIZE_LENGTH], t_dirInfos *dir)
+{
+	size[0] = MAX(integer_length(dir->dirStat.st_nlink), size[0]);
 	size[1] = MAX(ft_strlen(dir->owner), size[1]);
 	size[2] = MAX(ft_strlen(dir->gr_name), size[2]);
-	size[3] = MAX(integer_len(dir->dirStat.st_size), size[3]);
+	size[3] = MAX(integer_length(dir->dirStat.st_size), size[3]);
 }

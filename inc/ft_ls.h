@@ -20,9 +20,6 @@
 # define COLOR_DEFAULT	"\033[0m"
 # define COLOR_CYAN		"\033[1;36m"
 
-# define MAX(a, b)	b & ((a - b) >> 31) | a & (~(a - b) >> 31)
-# define MIN(a, b)	a & ((a - b) >> 31) | b & (~(a - b) >> 31)
-
 typedef struct s_options {
 	int reverse;
 	int showHidden;
@@ -68,5 +65,6 @@ void main_struct_init(t_datas *datas);
 t_dirInfos *init_dirInfo(struct stat dirStat, char dirName[256], char *path, int isSubdir);
 t_dirInfos *ft_lstadd(t_dirInfos **dirList, struct stat dirStat, char dirName[256], char *path, int isSubdir, int *isFirstDir, int isReverse, t_dirInfos **dirParent, int size[SIZE_LENGTH]);
 
+int parser(char **av, t_options *options);
 
 #endif

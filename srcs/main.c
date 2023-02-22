@@ -1,49 +1,7 @@
 #include "ft_ls.h"
 
-int		integer_len(int n)
+t_dirInfos *readFolder(t_datas *datas, char *path, int isSubdir, t_dirInfos **dirList)
 {
-	int		len;
-
-	len = 1;
-	while (n / 10) {
-		n /= 10;
-		++len;
-	}
-	return (len);
-}
-
-int parser(char **av, t_options *options) {
-	int	i;
-	int	j;
-	int	isFlag;
-
-	i = 1;
-	j = 0;
-	isFlag = 0;
-	while (av[i]) {
-		while (av[i][j]) {
-			if (j == 0 && av[i][j] == '-') {
-				isFlag = 1;
-			} else if (isFlag) {
-				if (!charIsFlag(av[i][j])) {
-					ft_printf("ft_ls : invalid option -- %c\n", av[i][j]);
-					ft_printf("usage: ls [-Ralrt] [file ...] \n");
-					return (-1);
-				}
-				fillOptions(av[i][j], options);
-			} else {
-				return (i);
-			}
-			j++;
-		}
-		j = 0;
-		isFlag = 0;
-		i++;
-	}
-	return (-1);
-}
-
-t_dirInfos *readFolder(t_datas *datas, char *path, int isSubdir, t_dirInfos **dirList) {
 	DIR *pDir;
 	struct dirent *currentDir;
 	struct stat statBuffer;
@@ -107,7 +65,8 @@ t_dirInfos *readFolder(t_datas *datas, char *path, int isSubdir, t_dirInfos **di
 	return (list);
 }
 
-int main(int ac, char **av) {	
+int main(int ac, char **av)
+{	
 	int			pathIndex;
 	t_dirInfos	*dirList;
 	t_datas		datas;
@@ -115,9 +74,8 @@ int main(int ac, char **av) {
 	dirList = NULL;
 	pathIndex = -1;
 	main_struct_init(&datas);
-	if (ac > 1) {
+	if (ac > 1)
 		pathIndex = parser(av, &datas.options);
-	}
 
 	if (pathIndex > 0)
 		dirList = readFolder(&datas, av[pathIndex], 0, &dirList);
