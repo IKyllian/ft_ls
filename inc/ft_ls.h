@@ -27,44 +27,61 @@ typedef struct s_options {
 	int listSubdir;
 }	t_options;
 
+typedef struct s_subDir_infos {
+	int		isSubDir;
+	int		isFirstDir;
+	char	*init_path;
+}	t_subDir_infos;
+
 typedef struct s_dirInfos {
-	struct stat dirStat;
-	char *dirName;
-	char *path;
-	char *owner;
-	char *gr_name;
-	int isSubdir;
-	blkcnt_t blocksSize;
-	struct s_dirInfos *subDir;
-	struct s_dirInfos *next;
+	struct stat			dirStat;
+	char				*dirName;
+	char				*path;
+	char				*owner;
+	char				*gr_name;
+	int					isSubdir;
+	blkcnt_t			blocksSize;
+	struct s_dirInfos	*subDir;
+	struct s_dirInfos	*next;
 }	t_dirInfos;
 
+typedef struct s_heads_list {
+	t_dirInfos *list;
+	t_dirInfos *ret;
+	t_dirInfos *dirParent;
+} t_heads_list;
+
+
 typedef struct s_datas {
-	t_options options;
-	int size[SIZE_LENGTH];
+	t_options	options;
+	int			size[SIZE_LENGTH];
 }	t_datas;
 
-int charIsFlag(char c);
-int arrayLength(char **array);
-void fillOptions(char c, t_options *options);
-int isUntrackFolder(char *str);
-int ishiddenFolder(char *str);
-int	integer_len(int n);
+int		charIsFlag(char c);
+int		arrayLength(char **array);
+void	fillOptions(char c, t_options *options);
+int		isUntrackFolder(char *str);
+int		ishiddenFolder(char *str);
+// int		integer_len(int n);
 
-void freeLst(t_dirInfos **dirList);
-void mem_check(void *pointer, t_dirInfos **dirList);
+void	freeLst(t_dirInfos **dirList);
+void	mem_check(void *pointer, t_dirInfos **dirList);
 
-void setPermision(struct stat dirStat, char str[SIZE_PERM]);
-char setFileType(mode_t mode);
-void setColumnSize(int size[SIZE_LENGTH], t_dirInfos *dir);
+void	setPermision(struct stat dirStat, char str[SIZE_PERM]);
+char	setFileType(mode_t mode);
+void	setColumnSize(int size[SIZE_LENGTH], t_dirInfos *dir);
 
-void printLongFormat(t_dirInfos *dir, int size[SIZE_LENGTH]);
-void printList(t_dirInfos **dirList, t_datas *datas, int isSub);
+void	printLongFormat(t_dirInfos *dir, int size[SIZE_LENGTH]);
+void	printList(t_dirInfos **dirList, t_datas *datas, int isSub);
 
 void main_struct_init(t_datas *datas);
 t_dirInfos *init_dirInfo(struct stat dirStat, char dirName[256], char *path, int isSubdir);
-t_dirInfos *ft_lstadd(t_dirInfos **dirList, struct stat dirStat, char dirName[256], char *path, int isSubdir, int *isFirstDir, int isReverse, t_dirInfos **dirParent, int size[SIZE_LENGTH]);
+
+t_dirInfos *ft_lstadd(t_dirInfos **dirList, struct stat dirStat, char dirName[256], char *path, t_subDir_infos *subDirInfos, int isReverse, t_dirInfos **dirParent, int size[SIZE_LENGTH]);
+// t_dirInfos	*ft_lstadd(t_dirInfos **dirList, struct stat dirStat, char dirName[256], char *path, int isSubDir, int *isFirstDir, int isReverse, t_dirInfos **dirParent, int size[SIZE_LENGTH]);
 
 int parser(char **av, t_options *options);
+
+t_dirInfos *readFolder(t_datas *datas, char *path, int isSubdir, t_dirInfos **dirList);
 
 #endif

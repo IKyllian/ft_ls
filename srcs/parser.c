@@ -30,7 +30,7 @@ int parser(char **av, t_options *options)
 			else if (isFlag)
 			{
                 if (flag_check(av[i][j], options) < 0)
-                    return (-1);
+                    return (-2);
 			} else
 				return (i);
 			j++;
