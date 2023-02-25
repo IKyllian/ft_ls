@@ -33,16 +33,22 @@ int dup_strings(t_dirInfos **new, char dirName[256], struct stat dirStat, char *
 	return (0);
 }
 
-t_dirInfos	*init_dirInfo(struct stat dirStat, char dirName[256], char *path, int isSubdir)
+t_dirInfos	*init_dirInfo(char dirName[256], char *path, int isSubdir)
 {
-	t_dirInfos *new;
+	t_dirInfos	*new;
+	struct stat	statBuffer;
 
+	if (stat(path, &statBuffer) < 0)
+	{
+		ft_printf("Error while Stat\n");
+		return (NULL);
+	}
 	new = (t_dirInfos *)malloc(sizeof(t_dirInfos));
 	if (!new)
 		return (NULL);
-	if (dup_strings(&new, dirName, dirStat, path) < 0)
+	if (dup_strings(&new, dirName, statBuffer, path) < 0)
 		return (NULL);
-	new->dirStat = dirStat;
+	new->dirStat = statBuffer;
 	new->isSubdir = isSubdir;
 	new->subDir = NULL;
 	new->next = NULL;
@@ -50,100 +56,12 @@ t_dirInfos	*init_dirInfo(struct stat dirStat, char dirName[256], char *path, int
 	return (new);
 }
 
-// t_dirInfos	*ft_lstadd(t_dirInfos **dirList, struct stat dirStat, char dirName[256], char *path, int isSubDir, int *isFirstDir, int isReverse, t_dirInfos **dirParent, int size[SIZE_LENGTH])
-// {
-// 	t_dirInfos *list = *dirList;
-// 	t_dirInfos *last  = NULL;
-// 	t_dirInfos *new  = NULL;
-
-// 	new = init_dirInfo(dirStat, dirName, path, isSubDir);
-// 	if (!new)
-// 		return (NULL);
-
-// 	setColumnSize(size, new);
-// 	if (*dirList == NULL) {
-// 		new->blocksSize += dirStat.st_blocks;
-// 		*dirList = new;
-// 		*isFirstDir = 0;
-// 		return (*dirList);
-// 	 } else if (*isFirstDir) {
-// 		new->blocksSize += dirStat.st_blocks;
-// 		list->subDir = new;
-// 		*isFirstDir = 0;
-// 		return (new);
-// 	}
-// 	while (list)
-// 	{
-// 		if ((!isReverse && strcmp(dirName, list->dirName) < 0) || (isReverse && strcmp(dirName, list->dirName) > 0))
-// 		{
-// 			new->next = list;
-// 			if (last != NULL)
-// 				last->next = new;
-// 			else
-// 			{
-// 				new->blocksSize = list->blocksSize;
-// 				new->blocksSize += new->dirStat.st_blocks;
-// 				if (*dirParent)
-// 					(*dirParent)->subDir = new;
-// 				*dirList = new;
-// 				return (new);
-// 			}
-// 			(*dirList)->blocksSize += new->dirStat.st_blocks;
-// 			return (new);
-// 		}
-// 		last = list;
-// 		list = list->next;
-// 	}
-// 	last->next = new;
-// 	(*dirList)->blocksSize += new->dirStat.st_blocks;
-// 	return (new);
-// }
-
-t_dirInfos	*ft_lstadd(t_dirInfos **dirList, struct stat dirStat, char dirName[256], char *path, t_subDir_infos *subDirInfos, int isReverse, t_dirInfos **dirParent, int size[SIZE_LENGTH])
+t_subDir_infos init_subDir_infos(int isSubDir)
 {
-	t_dirInfos *list = *dirList;
-	t_dirInfos *last  = NULL;
-	t_dirInfos *new  = NULL;
+	t_subDir_infos	new;
 
-	new = init_dirInfo(dirStat, dirName, path, subDirInfos->isSubDir);
-	if (!new)
-		return (NULL);
-
-	setColumnSize(size, new);
-	if (*dirList == NULL) {
-		new->blocksSize += dirStat.st_blocks;
-		*dirList = new;
-		subDirInfos->isFirstDir = 0;
-		return (*dirList);
-	 } else if (subDirInfos->isFirstDir) {
-		new->blocksSize += dirStat.st_blocks;
-		list->subDir = new;
-		subDirInfos->isFirstDir = 0;
-		return (new);
-	}
-	while (list)
-	{
-		if ((!isReverse && strcmp(dirName, list->dirName) < 0) || (isReverse && strcmp(dirName, list->dirName) > 0))
-		{
-			new->next = list;
-			if (last != NULL)
-				last->next = new;
-			else
-			{
-				new->blocksSize = list->blocksSize;
-				new->blocksSize += new->dirStat.st_blocks;
-				if (*dirParent)
-					(*dirParent)->subDir = new;
-				*dirList = new;
-				return (new);
-			}
-			(*dirList)->blocksSize += new->dirStat.st_blocks;
-			return (new);
-		}
-		last = list;
-		list = list->next;
-	}
-	last->next = new;
-	(*dirList)->blocksSize += new->dirStat.st_blocks;
+	new.init_path = NULL;
+	new.isFirstDir = 1;
+	new.isSubDir = isSubDir;
 	return (new);
 }

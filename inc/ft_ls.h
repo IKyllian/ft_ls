@@ -51,7 +51,6 @@ typedef struct s_heads_list {
 	t_dirInfos *dirParent;
 } t_heads_list;
 
-
 typedef struct s_datas {
 	t_options	options;
 	int			size[SIZE_LENGTH];
@@ -62,7 +61,6 @@ int		arrayLength(char **array);
 void	fillOptions(char c, t_options *options);
 int		isUntrackFolder(char *str);
 int		ishiddenFolder(char *str);
-// int		integer_len(int n);
 
 void	freeLst(t_dirInfos **dirList);
 void	mem_check(void *pointer, t_dirInfos **dirList);
@@ -75,13 +73,14 @@ void	printLongFormat(t_dirInfos *dir, int size[SIZE_LENGTH]);
 void	printList(t_dirInfos **dirList, t_datas *datas, int isSub);
 
 void main_struct_init(t_datas *datas);
-t_dirInfos *init_dirInfo(struct stat dirStat, char dirName[256], char *path, int isSubdir);
+t_dirInfos *init_dirInfo(char dirName[256], char *path, int isSubdir);
+t_subDir_infos init_subDir_infos(int isSubDir);
 
-t_dirInfos *ft_lstadd(t_dirInfos **dirList, struct stat dirStat, char dirName[256], char *path, t_subDir_infos *subDirInfos, int isReverse, t_dirInfos **dirParent, int size[SIZE_LENGTH]);
-// t_dirInfos	*ft_lstadd(t_dirInfos **dirList, struct stat dirStat, char dirName[256], char *path, int isSubDir, int *isFirstDir, int isReverse, t_dirInfos **dirParent, int size[SIZE_LENGTH]);
+t_dirInfos	*ft_lstadd_first(int size[SIZE_LENGTH], t_heads_list *heads_list, t_dirInfos **new, t_subDir_infos *subDirInfos);
+t_dirInfos	*ft_lstadd_second(t_dirInfos **new, t_heads_list *heads_list, int isReverse);
 
 int parser(char **av, t_options *options);
 
-t_dirInfos *readFolder(t_datas *datas, char *path, int isSubdir, t_dirInfos **dirList);
+t_dirInfos *readDir(t_datas *datas, char *path, int isSubdir, t_dirInfos **dirList);
 
 #endif

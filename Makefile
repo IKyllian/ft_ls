@@ -9,8 +9,9 @@ LST_SRCS =  main.c \
 			mem_utils.c \
 			print.c \
 			struct_utils.c \
-			parser.c
-		
+			parser.c \
+			lst_utils.c
+
 LST_OBJS = $(LST_SRCS:.c=.o)
 
 CC = gcc
