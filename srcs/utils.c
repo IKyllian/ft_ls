@@ -27,6 +27,8 @@ void	fillOptions(char c, t_options *options)
 		options->longFormat = 1;
 	else if (c == 'R')
 		options->listSubdir = 1;
+	else if (c == 't')
+		options->sortTime = 1;
 }
 
 int	isUntrackFolder(char *str)

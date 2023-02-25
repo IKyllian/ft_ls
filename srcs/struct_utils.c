@@ -6,6 +6,7 @@ void	main_struct_init(t_datas *datas)
 	datas->options.reverse = 0;
 	datas->options.showHidden = 0;
 	datas->options.listSubdir = 0;
+	datas->options.sortTime = 0;
 	ft_bzero(datas->size, sizeof(datas->size));
 }
 

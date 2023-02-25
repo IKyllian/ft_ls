@@ -1,6 +1,25 @@
 #ifndef FT_LS
 # define FT_LS
 
+#ifdef __APPLE__
+#ifndef st_mtime
+# define st_mtime st_mtimespec.tv_sec
+#endif
+#endif
+
+#ifdef __APPLE__
+#ifndef st_atime
+# define st_atime st_atimespec.tv_sec
+#endif
+#endif
+
+#ifdef __APPLE__
+#ifndef st_ctime
+# define st_ctime st_ctimespec.tv_sec
+#endif
+#endif
+
+
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <sys/xattr.h>
@@ -22,6 +41,7 @@
 
 typedef struct s_options {
 	int reverse;
+	int sortTime;
 	int showHidden;
 	int longFormat;
 	int listSubdir;
@@ -77,10 +97,13 @@ t_dirInfos *init_dirInfo(char dirName[256], char *path, int isSubdir);
 t_subDir_infos init_subDir_infos(int isSubDir);
 
 t_dirInfos	*ft_lstadd_first(int size[SIZE_LENGTH], t_heads_list *heads_list, t_dirInfos **new, t_subDir_infos *subDirInfos);
-t_dirInfos	*ft_lstadd_second(t_dirInfos **new, t_heads_list *heads_list, int isReverse);
+t_dirInfos	*ft_lstadd_second(t_dirInfos **new, t_heads_list *heads_list, t_options	options);
 
 int parser(char **av, t_options *options);
 
 t_dirInfos *readDir(t_datas *datas, char *path, int isSubdir, t_dirInfos **dirList);
+
+int sortByLetter(t_dirInfos *new, t_dirInfos *list, int reverse);
+int sortByTime(t_dirInfos *new, t_dirInfos *list, t_options	options);
 
 #endif

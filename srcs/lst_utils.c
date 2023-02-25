@@ -34,7 +34,7 @@ t_dirInfos	*ft_lstadd_first(int size[SIZE_LENGTH], t_heads_list *heads_list, t_d
 	return (NULL);
 }
 
-t_dirInfos	*ft_lstadd_second(t_dirInfos **new, t_heads_list *heads_list, int isReverse)
+t_dirInfos	*ft_lstadd_second(t_dirInfos **new, t_heads_list *heads_list, t_options	options)
 {
 	t_dirInfos *list;
 	t_dirInfos *last;
@@ -43,7 +43,7 @@ t_dirInfos	*ft_lstadd_second(t_dirInfos **new, t_heads_list *heads_list, int isR
 	list = heads_list->list;
 	while (list)
 	{
-		if ((!isReverse && strcmp((*new)->dirName, list->dirName) < 0) || (isReverse && strcmp((*new)->dirName, list->dirName) > 0))
+		if ((sortByTime(*new, list, options)) || (!options.sortTime && sortByLetter(*new, list, options.reverse)))
 		{
 			(*new)->next = list;
 			if (last != NULL)

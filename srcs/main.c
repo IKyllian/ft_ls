@@ -37,7 +37,7 @@ t_dirInfos *browseDir(t_datas *datas, DIR **pDir, t_dirInfos **dirList, t_subDir
 		new = init_dirInfo(currentDir->d_name, str, subDirInfos->isSubDir);
 		mem_check(new, dirList);
 		if ((heads_list.ret = ft_lstadd_first(datas->size, &heads_list, &new, subDirInfos)) == NULL
-			&& (heads_list.ret = ft_lstadd_second(&new, &heads_list, datas->options.reverse)) == NULL)
+			&& (heads_list.ret = ft_lstadd_second(&new, &heads_list, datas->options)) == NULL)
 			return (free_mem_dir(&heads_list.list, &subDirInfos->init_path, &str));
 		if (datas->options.listSubdir && S_ISDIR(heads_list.ret->dirStat.st_mode) && !isUntrackFolder(currentDir->d_name)
 			&& readDir(datas, str, 1, &heads_list.ret) == NULL)

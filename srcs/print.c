@@ -14,7 +14,7 @@ void	printLongFormat(t_dirInfos *dir, int size[SIZE_LENGTH])
 	}
 	permisions[i] = '\0';
 	setPermision(dir->dirStat, permisions);
-	dirTime = ctime(&dir->dirStat.st_mtimespec.tv_sec) + 4;
+	dirTime = ctime(&dir->dirStat.st_mtime) + 4;
 
 	ft_printf("%s ", permisions);
 	ft_printf("%*i ", size[0], dir->dirStat.st_nlink);

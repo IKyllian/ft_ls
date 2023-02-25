@@ -10,7 +10,8 @@ LST_SRCS =  main.c \
 			print.c \
 			struct_utils.c \
 			parser.c \
-			lst_utils.c
+			lst_utils.c \
+			sort.c
 
 LST_OBJS = $(LST_SRCS:.c=.o)
 
