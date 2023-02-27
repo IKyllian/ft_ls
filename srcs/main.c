@@ -1,98 +1,111 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/02/27 10:34:53 by kdelport          #+#    #+#             */
+/*   Updated: 2023/02/27 13:44:57 by kdelport         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_ls.h"
 
-void *free_mem_dir(t_dirInfos **list, char **init_path, char **path) {
-	if (*init_path)
-		free(*init_path);
-	*init_path = NULL;
-	if (*path)
-		free(*path);
-	freeLst(list);
-	return (NULL);
-}
-
-t_heads_list init_heads_list(t_dirInfos **dirList) {
+t_heads_list	init_heads_list(t_dirInfos **dirList)
+{
 	t_heads_list	new;
 
-	new.dirParent = NULL;
+	new.dir_parent = NULL;
 	new.ret = NULL;
 	new.list = *dirList;
 	return (new);
 }
 
-t_dirInfos *browseDir(t_datas *datas, DIR **pDir, t_dirInfos **dirList, t_subDir_infos *subDirInfos)
+t_dirInfos	*fill_variable(t_subDir_infos *sub_dir_infos, \
+	struct dirent *current_dir, t_dirInfos **dirList, char **str)
 {
-	struct dirent	*currentDir;
-	t_heads_list	heads_list;
+	t_dirInfos	*new;
+
+	*str = ft_strjoin(sub_dir_infos->init_path, current_dir->d_name);
+	mem_check(*str, dirList);
+	new = init_dir_info(current_dir->d_name, *str, sub_dir_infos->is_sub_dir);
+	mem_check(new, dirList);
+	return (new);
+}
+
+t_dirInfos	*browse_dir(t_datas *datas, DIR **p_dir, t_dirInfos **dirList, \
+	t_subDir_infos *sub_dir_infos)
+{
+	struct dirent	*currt_dir;
+	t_heads_list	heads;
 	t_dirInfos		*new;
 	char			*str;
 
 	str = NULL;
-	heads_list = init_heads_list(dirList);
-	while((currentDir = readdir(*pDir)) != NULL)
+	heads = init_heads_list(dirList);
+	currt_dir = readdir(*p_dir);
+	while (currt_dir)
 	{
-		if (!datas->options.showHidden && ishiddenFolder(currentDir->d_name))
-			continue;
-		str = ft_strjoin(subDirInfos->init_path, currentDir->d_name);
-		mem_check(str, dirList);
-		new = init_dirInfo(currentDir->d_name, str, subDirInfos->isSubDir);
-		mem_check(new, dirList);
-		if ((heads_list.ret = ft_lstadd_first(datas->size, &heads_list, &new, subDirInfos)) == NULL
-			&& (heads_list.ret = ft_lstadd_second(&new, &heads_list, datas->options)) == NULL)
-			return (free_mem_dir(&heads_list.list, &subDirInfos->init_path, &str));
-		if (datas->options.listSubdir && S_ISDIR(heads_list.ret->dirStat.st_mode) && !isUntrackFolder(currentDir->d_name)
-			&& readDir(datas, str, 1, &heads_list.ret) == NULL)
-			return (free_mem_dir(&heads_list.list, &subDirInfos->init_path, &str));
+		if (!datas->options.show_hidden && is_hidden_folder(currt_dir->d_name))
+			continue ;
+		fill_variable(sub_dir_infos, currt_dir, dirList, &str);
+		heads.ret = ft_lstadd_first(datas->size, &heads, &new, sub_dir_infos);
+		if (heads.ret == NULL)
+			heads.ret = ft_lstadd_second(&new, &heads, datas->options);
+		if (datas->options.list_subdir && S_ISDIR(heads.ret->dir_stat.st_mode)
+			&& !is_untrack_folder(currt_dir->d_name)
+			&& read_dir(datas, str, 1, &heads.ret) == NULL)
+			return (free_mem_dir(&heads.list, &sub_dir_infos->init_path, &str));
 		if (str)
 			free(str);
+		currt_dir = readdir(*p_dir);
 	}
-	return (heads_list.list);
+	return (heads.list);
 }
 
-t_dirInfos *readDir(t_datas *datas, char *path, int isSubdir, t_dirInfos **dirList)
+t_dirInfos	*read_dir(t_datas *datas, char *path, int is_sub_dir, \
+	t_dirInfos **dirList)
 {
-	DIR				*pDir;
-	t_subDir_infos	subDirInfos;
+	DIR				*p_dir;
+	t_subDir_infos	sub_dir_infos;
 	t_dirInfos		*ret;
 
-	subDirInfos = init_subDir_infos(isSubdir);
+	sub_dir_infos = init_sub_dir_infos(is_sub_dir);
 	if (path && path[ft_strlen(path) - 1] == '/')
-		subDirInfos.init_path = ft_strjoin(path, NULL);
+		sub_dir_infos.init_path = ft_strjoin(path, NULL);
 	else
-		subDirInfos.init_path = ft_strjoin(path, "/");
-	mem_check(subDirInfos.init_path, dirList);
-
-	pDir = opendir(path);
-	mem_check(pDir, dirList);
-
-	ret = browseDir(datas, &pDir, dirList, &subDirInfos);
-	if (subDirInfos.init_path)
-		free(subDirInfos.init_path);
-	closedir(pDir);
+		sub_dir_infos.init_path = ft_strjoin(path, "/");
+	mem_check(sub_dir_infos.init_path, dirList);
+	p_dir = opendir(path);
+	mem_check(p_dir, dirList);
+	ret = browse_dir(datas, &p_dir, dirList, &sub_dir_infos);
+	if (sub_dir_infos.init_path)
+		free(sub_dir_infos.init_path);
+	closedir(p_dir);
 	return (ret);
 }
 
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {	
-	int			pathIndex;
-	t_dirInfos	*dirList;
+	int			path_index;
+	t_dirInfos	*dir_list;
 	t_datas		datas;
 
-	dirList = NULL;
-	pathIndex = -1;
+	dir_list = NULL;
+	path_index = -1;
 	main_struct_init(&datas);
 	if (ac > 1)
-		pathIndex = parser(av, &datas.options);
-
-	if (pathIndex == -2)
+		path_index = parser(av, &datas.options);
+	if (path_index == -2)
 		return (-1);
-	if (pathIndex > 0)
-		dirList = readDir(&datas, av[pathIndex], 0, &dirList);
+	if (path_index > 0)
+		dir_list = read_dir(&datas, av[path_index], 0, &dir_list);
 	else
-		dirList = readDir(&datas, ".", 0, &dirList);
-	if (dirList == NULL)
+		dir_list = read_dir(&datas, ".", 0, &dir_list);
+	if (dir_list == NULL)
 		return (-1);
-
-	printList(&dirList, &datas, 0);
-	freeLst(&dirList);
-    return (0);
+	print_list(&dir_list, &datas, 0);
+	free_lst(&dir_list);
+	return (0);
 }

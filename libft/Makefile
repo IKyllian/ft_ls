@@ -20,7 +20,7 @@ RM = rm -f
 all : $(NAME)
 
 %.o : %.c $(HEADER)
-	$(CC) $(FLAGS) -c $< -o $(<:.c=.o)
+	$(CC) $(FLAGS) -c $< -o $@
 
 $(NAME) : $(OBJS) $(HEADER)
 	ar cr $(NAME) $(OBJS)

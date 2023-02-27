@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kdelport <kdelport@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 13:56:24 by kdelport          #+#    #+#             */
-/*   Updated: 2021/03/17 10:56:21 by kdelport         ###   ########lyon.fr   */
+/*   Updated: 2023/02/27 14:09:49 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 # include <unistd.h>
 # include <stdarg.h>
 
-# define MAX(a, b)	b & ((a - b) >> 31) | a & (~(a - b) >> 31)
-# define MIN(a, b)	a & ((a - b) >> 31) | b & (~(a - b) >> 31)
+# define MAX(a, b)	(b & ((a - b) >> 31)) | (a & (~(a - b) >> 31))
+# define MIN(a, b)	(a & ((a - b) >> 31)) | (b & (~(a - b) >> 31))
 
 typedef struct s_list
 {
@@ -26,7 +26,7 @@ typedef struct s_list
 	struct s_list	*next;
 }					t_list;
 
-typedef struct	s_struct
+typedef struct s_struct
 {
 	int			has_neg;
 	int			has_zero;
@@ -86,38 +86,44 @@ void				ft_lstiter(t_list *lst, void (*f)(void *));
 t_list				*ft_lstmap(t_list *lst, void *(*f)(void *),
 						void (*del)(void *));
 
-int				ft_printf(const char *format, ...);
-void			ft_putchar(char c, int *count);
-void			ft_putnbr(int n, int *count);
-void			ft_unsigned_putnbr(unsigned long long n, int *count);
-void			ft_putstr(char *str, int *count);
-void			fill_space(char c, int size, int *count);
-int				ft_itoh(unsigned long long nb, int low, int *ct, t_flags *flg);
-// int				nbr_length(int nbr);
-int				u_nbr_len(unsigned long long nbr, unsigned int size_base);
+int					ft_printf(const char *format, ...);
+void				ft_putchar(char c, int *count);
+void				ft_putnbr(int n, int *count);
+void				ft_unsigned_putnbr(unsigned long long n, int *count);
+void				ft_putstr(char *str, int *count);
+void				fill_space(char c, int size, int *count);
+int					ft_itoh(unsigned long long nb, int low, int *ct, \
+	t_flags *flg);
+int					u_nbr_len(unsigned long long nbr, unsigned int size_base);
 
-int				is_flags(char c);
-int				ft_count_numbers(char **str);
-int				ft_convert(char **str, va_list list, int *count, t_flags *flag);
-void			struct_initialize(t_flags *flags);
-void			check_space_is_neg(t_flags *flags);
-void			to_decimal(va_list list, int *count, t_flags *flags);
-void			to_unsigned_decimal(va_list list, int *count, t_flags *flags);
-int				to_hexa(va_list list, int *count, int is_min, t_flags *flags);
-void			to_character(va_list list, int *count, t_flags *flags);
-int				to_pointer_address(va_list list, int *count, t_flags *flags);
-void			to_string(va_list list, int *count, t_flags flags);
-void			to_percent(int *count, t_flags *flags);
+int					is_flags(char c);
+int					ft_count_numbers(char **str);
+int					ft_convert(char **str, va_list list, int *count, \
+	t_flags *flag);
+void				struct_initialize(t_flags *flags);
+void				check_space_is_neg(t_flags *flags);
+void				to_decimal(va_list list, int *count, t_flags *flags);
+void				to_unsigned_decimal(va_list list, int *count, \
+	t_flags *flags);
+int					to_hexa(va_list list, int *count, int is_min, \
+	t_flags *flags);
+void				to_character(va_list list, int *count, t_flags *flags);
+int					to_pointer_address(va_list list, int *count, \
+	t_flags *flags);
+void				to_string(va_list list, int *count, t_flags flags);
+void				to_percent(int *count, t_flags *flags);
 
-void			ope_dot_address(t_flags *f, int *count, int arg, int *len);
-void			ope_dot(t_flags *f, int *count, int arg, int *len);
-void			ope_space(t_flags *flags, int *c, int arg, int *len);
-void			ope_space_suff(t_flags *flags, int *count, int arg, int len);
-void			print_neg(int arg, int *count, t_flags *flags, int *arg_len);
+void				ope_dot_address(t_flags *f, int *count, int arg, int *len);
+void				ope_dot(t_flags *f, int *count, int arg, int *len);
+void				ope_space(t_flags *flags, int *c, int arg, int *len);
+void				ope_space_suff(t_flags *flags, int *count, int arg, \
+	int len);
+void				print_neg(int arg, int *count, t_flags *flags, \
+	int *arg_len);
 
-void			operands_string_dot(t_flags flags, int *count, int len);
-void			ope_space_string(t_flags flags, int *count, int len);
-void			ope_space_string_suff(t_flags flags, int *count, int len);
-void			print_string(t_flags flags, int *count, char *str, int len);
+void				operands_string_dot(t_flags flags, int *count, int len);
+void				ope_space_string(t_flags flags, int *count, int len);
+void				ope_space_string_suff(t_flags flags, int *count, int len);
+void				print_string(t_flags flags, int *count, char *str, int len);
 
 #endif

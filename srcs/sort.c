@@ -1,24 +1,37 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sort.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/02/27 10:33:52 by kdelport          #+#    #+#             */
+/*   Updated: 2023/02/27 12:47:37 by kdelport         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_ls.h"
 
-int sortByLetter(t_dirInfos *new, t_dirInfos *list, int reverse)
+int	sort_by_letter(t_dirInfos *new, t_dirInfos *list, int reverse)
 {
-    return ((!reverse && strcmp(new->dirName, list->dirName) < 0)
-        || (reverse && strcmp(new->dirName, list->dirName) > 0));
+	return ((!reverse && strcmp(new->dir_name, list->dir_name) < 0)
+		|| (reverse && strcmp(new->dir_name, list->dir_name) > 0));
 }
 
-int sortByTime(t_dirInfos *new, t_dirInfos *list, t_options	options)
+int	sort_by_time(t_dirInfos *new, t_dirInfos *list, t_options	options)
 {
-    if (new->dirStat.st_mtime == list->dirStat.st_mtime) {
-        // if (new->dirStat.st_atime == list->dirStat.st_atime) {
-        //     if (new->dirStat.st_ctime == list->dirStat.st_ctime)
-                return (sortByLetter(new, list, !options.reverse));
-        //    else
-        //     return ((options.sortTime && !options.reverse && new->dirStat.st_ctime > list->dirStat.st_ctime)
-        //         || (options.sortTime && options.reverse && new->dirStat.st_ctime < list->dirStat.st_ctime));
-        // } else
-        //     return ((options.sortTime && !options.reverse && new->dirStat.st_atime > list->dirStat.st_atime)
-        //         || (options.sortTime && options.reverse && new->dirStat.st_atime < list->dirStat.st_atime));
-    }   
-    return ((options.sortTime && !options.reverse && new->dirStat.st_mtime > list->dirStat.st_mtime)
-        || (options.sortTime && options.reverse && new->dirStat.st_mtime < list->dirStat.st_mtime));
+	if (new->dir_stat.st_mtime == list->dir_stat.st_mtime)
+	{
+		// if (new->dir_stat.st_atime == list->dir_stat.st_atime) {
+		//   if (new->dir_stat.st_ctime == list->dir_stat.st_ctime)
+				return (sort_by_letter(new, list, !options.reverse));
+		//  else
+		//   return ((options.sort_time && !options.reverse && new->dir_stat.st_ctime > list->dir_stat.st_ctime)
+		//	 || (options.sort_time && options.reverse && new->dir_stat.st_ctime < list->dir_stat.st_ctime));
+		// } else
+		//   return ((options.sort_time && !options.reverse && new->dir_stat.st_atime > list->dir_stat.st_atime)
+		//	 || (options.sort_time && options.reverse && new->dir_stat.st_atime < list->dir_stat.st_atime));
+	}   
+	return ((options.sort_time && !options.reverse && new->dir_stat.st_mtime > list->dir_stat.st_mtime)
+		|| (options.sort_time && options.reverse && new->dir_stat.st_mtime < list->dir_stat.st_mtime));
 }

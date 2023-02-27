@@ -3,21 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kdelport <kdelport@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 09:56:31 by kdelport          #+#    #+#             */
-/*   Updated: 2021/01/05 14:01:42 by kdelport         ###   ########lyon.fr   */
+/*   Updated: 2023/02/27 14:02:39 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libft.h"
 
-int		fill_struct_spaces(char **str, t_flags *flags)
+int	fill_struct_spaces(char **str, t_flags *flags)
 {
 	char	*nb_spaces;
 	int		i;
 
-	if (!(nb_spaces = malloc(sizeof(char) * (ft_count_numbers(str) + 1))))
+	nb_spaces = malloc(sizeof(char) * (ft_count_numbers(str) + 1));
+	if (!nb_spaces)
 		return (1);
 	i = 0;
 	if (*(*str - 1) == '-' && *(*str - 2) == '.')
@@ -39,7 +40,7 @@ int		fill_struct_spaces(char **str, t_flags *flags)
 
 void	fill_struct_star(char **str, t_flags *flags, va_list list)
 {
-	int nb;
+	int	nb;
 
 	nb = va_arg(list, int);
 	if (*(*str + 1) == '.')
@@ -55,7 +56,7 @@ void	fill_struct_star(char **str, t_flags *flags, va_list list)
 	}
 }
 
-int		check_prefix(char **str, t_flags *flags, va_list list)
+int	check_prefix(char **str, t_flags *flags, va_list list)
 {
 	while (*(*str) && is_flags(*(*str)))
 	{
@@ -82,9 +83,9 @@ int		check_prefix(char **str, t_flags *flags, va_list list)
 	return (0);
 }
 
-int		ft_display(char **str, va_list list, int *count)
+int	ft_display(char **str, va_list list, int *count)
 {
-	t_flags flags;
+	t_flags	flags;
 
 	struct_initialize(&flags);
 	if (is_flags(*(*str)))
@@ -96,9 +97,9 @@ int		ft_display(char **str, va_list list, int *count)
 	return (0);
 }
 
-int		ft_printf(const char *format, ...)
+int	ft_printf(const char *format, ...)
 {
-	va_list list;
+	va_list	list;
 	int		count;
 	char	*str;
 
@@ -112,9 +113,8 @@ int		ft_printf(const char *format, ...)
 		else
 		{
 			++str;
-			if (*str)
-				if (ft_display(&str, list, &count) == 1)
-					return (-1);
+			if (*str && ft_display(&str, list, &count) == 1)
+				return (-1);
 		}
 		if (*str)
 			str++;
