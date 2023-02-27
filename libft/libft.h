@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kdelport <kdelport@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/23 13:56:24 by kdelport          #+#    #+#             */
-/*   Updated: 2021/03/17 10:56:21 by kdelport         ###   ########lyon.fr   */
+/*   Updated: 2023/02/27 14:46:22 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 # include <unistd.h>
 # include <stdarg.h>
 
-# define MAX(a, b)	b & ((a - b) >> 31) | a & (~(a - b) >> 31)
-# define MIN(a, b)	a & ((a - b) >> 31) | b & (~(a - b) >> 31)
+# define MAX(a, b)	(b & ((a - b) >> 31)) | (a & (~(a - b) >> 31))
+# define MIN(a, b)	(a & ((a - b) >> 31)) | (b & (~(a - b) >> 31))
 
 typedef struct s_list
 {
