@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/28 10:11:55 by kdelport          #+#    #+#             */
-/*   Updated: 2023/02/28 10:15:31 by kdelport         ###   ########.fr       */
+/*   Updated: 2023/02/28 11:48:17 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,13 @@ int	skip_dir(DIR **p_dir, struct dirent **currt_dir, t_datas *datas)
 	return (0);
 }
 
+void	loop_end(char **str, struct dirent **currt_dir, DIR **p_dir)
+{
+	if (*str)
+		free(*str);
+	*currt_dir = readdir(*p_dir);
+}
+
 t_dirInfos	*browse_dir(t_datas *datas, DIR **p_dir, t_dirInfos **dirList, \
 	t_subDir_infos *sub_dir_infos)
 {
@@ -53,13 +60,13 @@ t_dirInfos	*browse_dir(t_datas *datas, DIR **p_dir, t_dirInfos **dirList, \
 		heads.ret = ft_lstadd_first(datas->size, &heads, &new, sub_dir_infos);
 		if (heads.ret == NULL)
 			heads.ret = ft_lstadd_second(&new, &heads, datas->options);
+		if (heads.ret == NULL)
+			free_mem_dir(&heads.list, &sub_dir_infos->init_path, &str);
 		if (datas->options.list_subdir && S_ISDIR(heads.ret->dir_stat.st_mode)
 			&& !is_untrack_folder(currt_dir->d_name)
 			&& read_dir(datas, str, 1, &heads.ret) == NULL)
 			return (free_mem_dir(&heads.list, &sub_dir_infos->init_path, &str));
-		if (str)
-			free(str);
-		currt_dir = readdir(*p_dir);
+		loop_end(&str, &currt_dir, p_dir);
 	}
 	return (heads.list);
 }
