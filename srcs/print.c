@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 10:35:10 by kdelport          #+#    #+#             */
-/*   Updated: 2023/02/27 12:59:48 by kdelport         ###   ########.fr       */
+/*   Updated: 2023/02/28 10:34:09 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,6 @@ void	print_list(t_dirInfos **dirList, t_datas *datas, int is_sub)
 	{
 		if (datas->options.long_format)
 			print_long_format(list, datas->size);
-		// if (S_ISDIR(list->dir_stat.st_mode))
-		// 	ft_printf("%s%s%s \n", COLOR_CYAN, list->dir_name, COLOR_DEFAULT);
-		// else
 		ft_printf("%s \n", list->dir_name);
 		list = list->next;
 	}

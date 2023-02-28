@@ -62,3 +62,11 @@ void	set_column_size(int size[SIZE_LENGTH], t_dirInfos *dir)
 	size[2] = MAX(ft_strlen(dir->gr_name), size[2]);
 	size[3] = MAX(integer_length(dir->dir_stat.st_size), size[3]);
 }
+
+// void	set_column_size(int size[SIZE_LENGTH], t_dirInfos *dir)
+// {
+// 	size[0] = max_nbr(integer_length(dir->dir_stat.st_nlink), size[0]);
+// 	size[1] = max_nbr(ft_strlen(dir->owner), size[1]);
+// 	size[2] = max_nbr(ft_strlen(dir->gr_name), size[2]);
+// 	size[3] = max_nbr(integer_length(dir->dir_stat.st_size), size[3]);
+// }

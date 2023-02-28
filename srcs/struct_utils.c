@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 10:35:15 by kdelport          #+#    #+#             */
-/*   Updated: 2023/02/27 12:59:52 by kdelport         ###   ########.fr       */
+/*   Updated: 2023/02/28 10:10:51 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,5 +77,15 @@ t_subDir_infos	init_sub_dir_infos(int is_sub_dir)
 	new.init_path = NULL;
 	new.is_first_dir = 1;
 	new.is_sub_dir = is_sub_dir;
+	return (new);
+}
+
+t_heads_list	init_heads_list(t_dirInfos **dirList)
+{
+	t_heads_list	new;
+
+	new.dir_parent = NULL;
+	new.ret = NULL;
+	new.list = *dirList;
 	return (new);
 }

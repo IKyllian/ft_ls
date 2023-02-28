@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 10:35:22 by kdelport          #+#    #+#             */
-/*   Updated: 2023/02/27 12:42:22 by kdelport         ###   ########.fr       */
+/*   Updated: 2023/02/28 10:31:55 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,4 +47,11 @@ int	is_hidden_folder(char *str)
 	if (ft_strlen(str) > 0 && str[0] == '.')
 		return (1);
 	return (0);
+}
+
+int	max_nbr(int a, int b)
+{
+	if (a > b)
+		return (a);
+	return (b);
 }

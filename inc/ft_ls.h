@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 12:38:01 by kdelport          #+#    #+#             */
-/*   Updated: 2023/02/27 13:42:25 by kdelport         ###   ########.fr       */
+/*   Updated: 2023/02/28 10:35:20 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ int				char_is_flag(char c);
 void			fill_options(char c, t_options *options);
 int				is_untrack_folder(char *str);
 int				is_hidden_folder(char *str);
+int				max_nbr(int a, int b);
 
 void			free_lst(t_dirInfos **dirList);
 void			mem_check(void *pointer, t_dirInfos **dirList);
@@ -106,6 +107,7 @@ void			print_list(t_dirInfos **dirList, t_datas *datas, int isSub);
 void			main_struct_init(t_datas *datas);
 t_dirInfos		*init_dir_info(char dir_name[256], char *path, int is_sub_dir);
 t_subDir_infos	init_sub_dir_infos(int is_sub_dir);
+t_heads_list	init_heads_list(t_dirInfos **dirList);
 
 t_dirInfos		*ft_lstadd_first(int size[SIZE_LENGTH], \
 	t_heads_list *heads_list, t_dirInfos **new, t_subDir_infos *subDirInfos);
@@ -120,5 +122,14 @@ t_dirInfos		*read_dir(t_datas *datas, char *path, int is_sub_dir, \
 int				sort_by_letter(t_dirInfos *new, t_dirInfos *list, int reverse);
 int				sort_by_time(t_dirInfos *new, t_dirInfos *list, \
 	t_options options);
+
+t_dirInfos		*read_dir(t_datas *datas, char *path, int is_sub_dir, \
+	t_dirInfos **dirList);
+t_dirInfos		*browse_dir(t_datas *datas, DIR **p_dir, t_dirInfos **dirList, \
+	t_subDir_infos *sub_dir_infos);
+int				skip_dir(DIR **p_dir, struct dirent **currt_dir, \
+	t_datas *datas);
+t_dirInfos		*fill_variable(t_subDir_infos *sub_dir_infos, \
+	struct dirent *current_dir, t_dirInfos **dirList, char **str);
 
 #endif
