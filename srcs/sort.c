@@ -8,7 +8,7 @@ int sortByLetter(t_dirInfos *new, t_dirInfos *list, int reverse)
 
 int sortByTime(t_dirInfos *new, t_dirInfos *list, t_options	options)
 {
-    if (new->dirStat.st_mtime == list->dirStat.st_mtime) {
+    if (options.sortTime && new->dirStat.st_mtime == list->dirStat.st_mtime) {
         // if (new->dirStat.st_atime == list->dirStat.st_atime) {
         //     if (new->dirStat.st_ctime == list->dirStat.st_ctime)
                 return (sortByLetter(new, list, !options.reverse));
