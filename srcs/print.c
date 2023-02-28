@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 10:35:10 by kdelport          #+#    #+#             */
-/*   Updated: 2023/02/28 10:34:09 by kdelport         ###   ########.fr       */
+/*   Updated: 2023/02/28 12:41:12 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,7 @@ void	print_dir_infos(int is_sub, t_dirInfos **list, t_dirInfos	**head, \
 		(*head) = (*head)->sub_dir;
 	}
 	if (datas->options.long_format && (*list))
-	{
-		ft_printf("total %i\n", (*list)->blocks_size);
-	}
+		ft_printf("total %i\n", (*list)->blocks_size / 2);
 }
 
 void	print_list(t_dirInfos **dirList, t_datas *datas, int is_sub)
