@@ -96,6 +96,7 @@ int				max_nbr(int a, int b);
 void			free_lst(t_dirInfos **dirList);
 void			mem_check(void *pointer, t_dirInfos **dirList);
 void			*free_mem_dir(t_dirInfos **list, char **init_path, char **path);
+void			free_array(char ***arg_list);
 
 void			set_permision(struct stat dir_stat, char str[SIZE_PERM]);
 char			set_file_type(mode_t mode);
@@ -114,7 +115,8 @@ t_dirInfos		*ft_lstadd_first(int size[SIZE_LENGTH], \
 t_dirInfos		*ft_lstadd_second(t_dirInfos **new, t_heads_list *heads_list, \
 	t_options	options);
 
-int				parser(char **av, t_options *options);
+// int				parser(char **av, t_options *options);
+char				**parser(char **av, int ac, t_options *options);
 
 t_dirInfos		*read_dir(t_datas *datas, char *path, int is_sub_dir, \
 	t_dirInfos **dirList);

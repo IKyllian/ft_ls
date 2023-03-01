@@ -34,6 +34,7 @@ void	free_lst(t_dirInfos **dirList)
 		free(list);
 		list = next;
 	}
+	*dirList = NULL;
 }
 
 void	mem_check(void *pointer, t_dirInfos **dirList)
@@ -54,4 +55,17 @@ void	*free_mem_dir(t_dirInfos **list, char **init_path, char **path)
 		free(*path);
 	free_lst(list);
 	return (NULL);
+}
+
+void	free_array(char ***arg_list)
+{
+	int	i;
+
+	i = 0;
+	while ((*arg_list)[i])
+	{
+		free((*arg_list)[i]);
+		i++;
+	}
+	free(*arg_list);
 }

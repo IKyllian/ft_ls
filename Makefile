@@ -12,7 +12,7 @@ LST_SRCS =  main.c \
 			parser.c \
 			lst_utils.c \
 			sort.c \
-			dir_parser.c
+			dir_parse.c
 
 LST_OBJS = $(LST_SRCS:.c=.o)
 

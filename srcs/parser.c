@@ -24,13 +24,19 @@ int	flag_check(char c, t_options *options)
 	return (0);
 }
 
-int	parser(char **av, t_options *options)
+char	**parser(char **av, int ac, t_options *options)
 {
 	int	i;
 	int	j;
+	int	idx;
 	int	is_flag;
+	char	**arg_list;
 
 	i = 1;
+	idx = 0;
+	arg_list = (char **)malloc(sizeof(char *) * ac);
+	if (!arg_list)
+		return (NULL);
 	while (av[i])
 	{
 		is_flag = 0;
@@ -41,14 +47,20 @@ int	parser(char **av, t_options *options)
 				is_flag = 1;
 			else if (is_flag)
 			{
-				if (flag_check(av[i][j], options) < 0)
-					return (-2);
+				flag_check(av[i][j], options);
+				// if (flag_check(av[i][j], options) < 0)
+				// 	return (-2);
 			}
 			else
-				return (i);
+			{
+				arg_list[idx] = ft_strdup(av[i]);
+				idx++;
+				break ;
+			}
 			j++;
 		}
 		i++;
 	}
-	return (-1);
+	arg_list[idx] = NULL;
+	return (arg_list);
 }
