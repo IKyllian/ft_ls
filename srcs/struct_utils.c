@@ -52,7 +52,7 @@ t_dirInfos	*init_dir_info(char dir_name[256], char *path, int is_sub_dir)
 	t_dirInfos	*new;
 	struct stat	stat_buffer;
 
-	if (stat(path, &stat_buffer) < 0)
+	if (lstat(path, &stat_buffer) < 0)
 	{
 		ft_printf("Error while Stat\n");
 		return (NULL);

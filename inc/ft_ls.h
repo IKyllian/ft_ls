@@ -41,11 +41,12 @@
 # include <grp.h>
 # include <string.h>
 # include <time.h>
+# include <limits.h>
 # include <pwd.h>
 # include "../libft/libft.h"
 
 # define SIZE_LENGTH 4
-# define SIZE_PERM 11
+# define SIZE_PERM 12
 
 # define COLOR_DEFAULT	"\033[0m"
 # define COLOR_CYAN		"\033[1;36m"

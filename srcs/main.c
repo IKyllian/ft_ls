@@ -12,6 +12,16 @@
 
 #include "ft_ls.h"
 
+int	array_length(char **array)
+{
+	int	i;
+
+	i = 0;
+	while (array[i])
+		i++;
+	return (i);
+}
+
 int	last_exec(t_dirInfos **dir_list, t_datas *datas)
 {
 	if (*dir_list == NULL)
@@ -24,8 +34,10 @@ int	last_exec(t_dirInfos **dir_list, t_datas *datas)
 int	ls_exec(char **arg_list, t_datas *datas, t_dirInfos **dir_list)
 {
 	int i;
+	int	length;
 
 	i = 0;
+	length = array_length(arg_list);
 	if (arg_list[0] == NULL)
 		*dir_list = read_dir(datas, ".", 0, dir_list);
 	else
@@ -34,8 +46,11 @@ int	ls_exec(char **arg_list, t_datas *datas, t_dirInfos **dir_list)
 		{
 			if (i != 0)
 				ft_putchar_fd('\n', 1);
-			ft_putstr_fd(arg_list[i], 1);
-			ft_putstr_fd(":\n", 1);
+			if (length > 1)
+			{
+				ft_putstr_fd(arg_list[i], 1);
+				ft_putstr_fd(":\n", 1);
+			}
 			*dir_list = read_dir(datas, arg_list[i], 0, dir_list);
 			if (last_exec(dir_list, datas) < 0)
 				return (-1);

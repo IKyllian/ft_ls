@@ -47,9 +47,11 @@ char	**parser(char **av, int ac, t_options *options)
 				is_flag = 1;
 			else if (is_flag)
 			{
-				flag_check(av[i][j], options);
-				// if (flag_check(av[i][j], options) < 0)
-				// 	return (-2);
+				if (flag_check(av[i][j], options) < 0)
+				{
+					free_array(&arg_list);
+					return (NULL);
+				}
 			}
 			else
 			{
