@@ -32,10 +32,10 @@ all : libft $(NAME)
 
 $(DIR_OBJS)/%.o : $(DIR_FILES)/%.c $(HEADER) $(LIB_PATH)$(LIB_NAME)
 	@mkdir -p $(DIR_OBJS) $(addprefix $(DIR_OBJS)/,$(LST))
-	$(CC) $(FLAGS) -I inc -c $< -o $@
+	$(CC) -c $(FLAGS) -I ./inc/ -I $(LIB_PATH) $< -o $@
 
 $(NAME) : $(LIB_PATH)$(LIB_NAME) $(OBJS) $(HEADER)
-		$(CC) $(FLAGS) -o $@ $(OBJS) -L $(LIB_PATH) -lft
+		@gcc $(FLAGS) $(OBJS) -I ./inc/ -I $(LIB_PATH) -L libft/ -lft -o $(NAME)
 
 libft :
 		make -C $(LIB_PATH)
