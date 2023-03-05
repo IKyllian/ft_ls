@@ -24,6 +24,20 @@ int	flag_check(char c, t_options *options)
 	return (0);
 }
 
+int	check_dir_exist(char *path)
+{
+	DIR	*p_dir;
+
+	p_dir = opendir(path);
+	if (p_dir == NULL)
+	{
+		ft_printf("ft_ls: cannot access '%s': No such file or directory\n", path);
+		return (-1);
+	}
+	closedir(p_dir);
+	return (0);
+}
+
 char	**parser(char **av, int ac, t_options *options)
 {
 	int	i;
@@ -55,8 +69,8 @@ char	**parser(char **av, int ac, t_options *options)
 			}
 			else
 			{
-				arg_list[idx] = ft_strdup(av[i]);
-				idx++;
+				if (check_dir_exist(av[i]) != -1)
+					arg_list[idx++] = ft_strdup(av[i]);
 				break ;
 			}
 			j++;
