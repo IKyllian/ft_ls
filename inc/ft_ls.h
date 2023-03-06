@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 12:38:01 by kdelport          #+#    #+#             */
-/*   Updated: 2023/02/28 11:46:24 by kdelport         ###   ########.fr       */
+/*   Updated: 2023/03/06 13:24:04 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@
 
 # define COLOR_DEFAULT	"\033[0m"
 # define COLOR_CYAN		"\033[1;36m"
+# define COLOR_GREEN	"\033[1;32m"
 
 typedef struct s_options {
 	int	reverse;

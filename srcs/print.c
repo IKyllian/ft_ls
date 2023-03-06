@@ -6,11 +6,21 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 10:35:10 by kdelport          #+#    #+#             */
-/*   Updated: 2023/03/06 11:03:56 by kdelport         ###   ########.fr       */
+/*   Updated: 2023/03/06 13:23:14 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
+
+void	print_dir_name(char *name, mode_t mode)
+{
+	if (S_ISDIR(mode))
+			ft_printf("%s%s%s", COLOR_CYAN, name, COLOR_DEFAULT);
+	else if (mode & S_IXUSR)
+		ft_printf("%s%s%s", COLOR_GREEN, name, COLOR_DEFAULT);
+	else
+		ft_printf("%s", name);
+}
 
 char	get_file_attributes(t_dirInfos *dir)
 {
@@ -39,7 +49,7 @@ void	print_items(t_dirInfos *dir, int size[SIZE_LENGTH], char *dir_time, \
 		ft_printf("%s -> %s", dir->dir_name, buff);
 	}
 	else
-		ft_printf("%s", dir->dir_name);
+		print_dir_name(dir->dir_name, dir->dir_stat.st_mode);
 }
 
 void	exec_long_format(t_dirInfos *dir, int size[SIZE_LENGTH])
@@ -84,7 +94,7 @@ void	print_list(t_dirInfos **dirList, t_datas *datas, int is_sub)
 		if (datas->options.long_format)
 			exec_long_format(list, datas->size);
 		else
-			ft_printf("%s", list->dir_name);
+			print_dir_name(list->dir_name, list->dir_stat.st_mode);
 		ft_putchar_fd('\n', 1);
 		list = list->next;
 	}

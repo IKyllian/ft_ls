@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 10:35:06 by kdelport          #+#    #+#             */
-/*   Updated: 2023/03/06 12:42:39 by kdelport         ###   ########.fr       */
+/*   Updated: 2023/03/06 13:06:36 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,14 +59,14 @@ int	arg_check(char *av, t_options *options, char ***arg_list, int *idx)
 		else
 		{
 			if (check_dir_exist(av) != -1)
-				(*arg_list)[*idx++] = ft_strdup(av);
+				(*arg_list)[(*idx)++] = ft_strdup(av);
 			break ;
 		}
 	}
 	return (0);
 }
 
-int	parse_exec(char **av, t_options *options, char ***arg_list)
+int	parse_exec(char **av, int ac, t_options *options, char ***arg_list)
 {
 	int	i;
 	int	idx;
@@ -77,6 +77,11 @@ int	parse_exec(char **av, t_options *options, char ***arg_list)
 	{
 		if (arg_check(av[i], options, arg_list, &idx) < 0)
 			return (-1);
+	}
+	if (idx == 0 && ac > 1)
+	{
+		free(*arg_list);
+		return (-1);
 	}
 	(*arg_list)[idx] = NULL;
 	return (0);
@@ -89,7 +94,7 @@ char	**parser(char **av, int ac, t_options *options)
 	arg_list = (char **)malloc(sizeof(char *) * ac);
 	if (!arg_list)
 		return (NULL);
-	if (parse_exec(av, options, &arg_list) < 0)
+	if (parse_exec(av, ac, options, &arg_list) < 0)
 		return (NULL);
 	return (arg_list);
 }
