@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 10:34:53 by kdelport          #+#    #+#             */
-/*   Updated: 2023/02/28 12:59:33 by kdelport         ###   ########.fr       */
+/*   Updated: 2023/03/06 12:43:51 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,16 +33,16 @@ int	last_exec(t_dirInfos **dir_list, t_datas *datas)
 
 int	ls_exec(char **arg_list, t_datas *datas, t_dirInfos **dir_list)
 {
-	int i;
+	int	i;
 	int	length;
 
-	i = 0;
+	i = -1;
 	length = array_length(arg_list);
 	if (arg_list[0] == NULL)
 		*dir_list = read_dir(datas, ".", 0, dir_list);
 	else
 	{
-		while (arg_list[i])
+		while (arg_list[++i])
 		{
 			if (i != 0)
 				ft_putchar_fd('\n', 1);
@@ -54,7 +54,6 @@ int	ls_exec(char **arg_list, t_datas *datas, t_dirInfos **dir_list)
 			*dir_list = read_dir(datas, arg_list[i], 0, dir_list);
 			if (last_exec(dir_list, datas) < 0)
 				return (-1);
-			i++;
 		}
 		return (0);
 	}

@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/28 10:11:55 by kdelport          #+#    #+#             */
-/*   Updated: 2023/02/28 12:53:23 by kdelport         ###   ########.fr       */
+/*   Updated: 2023/03/06 10:38:26 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,8 @@ t_dirInfos	*read_dir(t_datas *datas, char *path, int is_sub_dir, \
 	p_dir = opendir(path);
 	if (p_dir == NULL)
 	{
-		ft_printf("ft_ls: cannot access '%s': No such file or directory\n", path);
+		ft_printf("ft_ls: cannot access '%s': No such file or directory\n", \
+			path);
 		mem_check(p_dir, dirList);
 	}
 	ret = browse_dir(datas, &p_dir, dirList, &sub_dir_infos);

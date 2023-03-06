@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 10:35:10 by kdelport          #+#    #+#             */
-/*   Updated: 2023/02/28 12:41:12 by kdelport         ###   ########.fr       */
+/*   Updated: 2023/03/06 11:03:56 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,13 @@ char	get_file_attributes(t_dirInfos *dir)
 {
 	char	buff2[101];
 
-	if (listxattr(dir->path, buff2, sizeof(buff2), XATTR_NOFOLLOW) > 0)
+	if (listxattr(dir->path, buff2, sizeof(buff2)) > 0)
 		return ('@');
-	return (' ');	
+	return (' ');
 }
 
-void	print_items(t_dirInfos *dir, int size[SIZE_LENGTH], char *dir_time, char permisions[SIZE_PERM])
+void	print_items(t_dirInfos *dir, int size[SIZE_LENGTH], char *dir_time, \
+	char permisions[SIZE_PERM])
 {
 	char	buff[NAME_MAX + 1];
 
@@ -46,7 +47,7 @@ void	exec_long_format(t_dirInfos *dir, int size[SIZE_LENGTH])
 	char	permisions[SIZE_PERM];
 	char	*dir_time;
 	int		i;
-	
+
 	i = 0;
 	while (i < SIZE_PERM - 2)
 		permisions[i++] = '-';

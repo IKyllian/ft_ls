@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/28 11:48:57 by kdelport          #+#    #+#             */
-/*   Updated: 2023/02/28 11:53:38 by kdelport         ###   ########.fr       */
+/*   Updated: 2023/03/06 11:24:58 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*ft_str_tolower(char *str)
 	new = (char *)malloc(sizeof(char) * (ft_strlen(str) + 1));
 	if (new == NULL)
 		return (NULL);
-	while(str[i])
+	while (str[i])
 	{
 		new[i] = ft_tolower(str[i]);
 		i++;
