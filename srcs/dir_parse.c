@@ -52,6 +52,10 @@ t_dirInfos	*browse_dir(t_datas *datas, DIR **p_dir, t_dirInfos **dirList, \
 	str = NULL;
 	heads = init_heads_list(dirList);
 	currt_dir = readdir(*p_dir);
+	// printf("azeaze\n");
+	if (currt_dir == NULL)
+		printf("NULL\n");
+
 	while (currt_dir != NULL)
 	{
 		if (skip_dir(p_dir, &currt_dir, datas))
@@ -71,6 +75,30 @@ t_dirInfos	*browse_dir(t_datas *datas, DIR **p_dir, t_dirInfos **dirList, \
 	return (heads.list);
 }
 
+t_dirInfos	*init_for_file(char *path)
+{
+	t_dirInfos	*new;
+	struct stat	stat_buffer;
+
+	if (lstat(path, &stat_buffer) < 0)
+	{
+		ft_printf("Error while Stat\n");
+		return (NULL);
+	}
+	new = (t_dirInfos *)malloc(sizeof(t_dirInfos));
+	if (!new)
+		return (NULL);
+	if (dup_strings(&new, path, stat_buffer, path) < 0)
+		return (NULL);
+	new->dir_stat = stat_buffer;
+	new->is_sub_dir = 0;
+	new->sub_dir = NULL;
+	new->next = NULL;
+	new->is_file = 1;
+	new->blocks_size = 0;
+	return (new);
+}
+
 t_dirInfos	*read_dir(t_datas *datas, char *path, int is_sub_dir, \
 	t_dirInfos **dirList)
 {
@@ -78,6 +106,7 @@ t_dirInfos	*read_dir(t_datas *datas, char *path, int is_sub_dir, \
 	t_subDir_infos	sub_dir_infos;
 	t_dirInfos		*ret;
 
+	errno = 0;
 	sub_dir_infos = init_sub_dir_infos(is_sub_dir);
 	if (path && path[ft_strlen(path) - 1] == '/')
 		sub_dir_infos.init_path = ft_strjoin(path, NULL);
@@ -87,6 +116,12 @@ t_dirInfos	*read_dir(t_datas *datas, char *path, int is_sub_dir, \
 	p_dir = opendir(path);
 	if (p_dir == NULL)
 	{
+		if (errno == 20)
+		{
+			if (sub_dir_infos.init_path)
+				free(sub_dir_infos.init_path);
+			return (init_for_file(path));
+		}
 		ft_printf("ft_ls: cannot access '%s': No such file or directory\n", \
 			path);
 		mem_check(p_dir, dirList);
@@ -94,6 +129,7 @@ t_dirInfos	*read_dir(t_datas *datas, char *path, int is_sub_dir, \
 	ret = browse_dir(datas, &p_dir, dirList, &sub_dir_infos);
 	if (sub_dir_infos.init_path)
 		free(sub_dir_infos.init_path);
-	closedir(p_dir);
+	if (p_dir)
+		closedir(p_dir);
 	return (ret);
 }

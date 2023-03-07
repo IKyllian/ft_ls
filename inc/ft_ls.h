@@ -43,6 +43,7 @@
 # include <time.h>
 # include <limits.h>
 # include <pwd.h>
+# include <errno.h>
 # include "../libft/libft.h"
 
 # define SIZE_LENGTH 4
@@ -73,6 +74,7 @@ typedef struct s_dirInfos {
 	char				*owner;
 	char				*gr_name;
 	int					is_sub_dir;
+	int					is_file;
 	blkcnt_t			blocks_size;
 	struct s_dirInfos	*sub_dir;
 	struct s_dirInfos	*next;
@@ -111,6 +113,8 @@ void			main_struct_init(t_datas *datas);
 t_dirInfos		*init_dir_info(char dir_name[256], char *path, int is_sub_dir);
 t_subDir_infos	init_sub_dir_infos(int is_sub_dir);
 t_heads_list	init_heads_list(t_dirInfos **dirList);
+int				dup_strings(t_dirInfos **new, char dir_name[256], \
+	struct stat dir_stat, char *path);
 
 t_dirInfos		*ft_lstadd_first(int size[SIZE_LENGTH], \
 	t_heads_list *heads_list, t_dirInfos **new, t_subDir_infos *subDirInfos);

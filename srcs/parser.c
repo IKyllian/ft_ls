@@ -28,15 +28,17 @@ int	flag_check(char c, t_options *options, char ***arg_list)
 int	check_dir_exist(char *path)
 {
 	DIR	*p_dir;
+	errno = 0;
 
 	p_dir = opendir(path);
-	if (p_dir == NULL)
+	if (p_dir == NULL && errno != 20)
 	{
 		ft_printf("ft_ls: cannot access '%s': No such file or directory\n", \
 			path);
 		return (-1);
 	}
-	closedir(p_dir);
+	if (p_dir)
+		closedir(p_dir);
 	return (0);
 }
 

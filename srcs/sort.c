@@ -20,7 +20,7 @@ int	sort_by_letter(t_dirInfos *new, t_dirInfos *list, int reverse)
 
 	new_name = ft_str_tolower(new->dir_name);
 	list_name = ft_str_tolower(list->dir_name);
-	ret = ((!reverse && strcmp(new_name, list_name) < 0)
+	ret = ((!reverse && new->is_file && strcmp(new_name, list_name) < 0)
 			|| (reverse && strcmp(new_name, list_name) > 0));
 	free(new_name);
 	free(list_name);
@@ -31,7 +31,16 @@ int	sort_by_time(t_dirInfos *new, t_dirInfos *list, t_options	options)
 {
 	if (options.sort_time && new->dir_stat.st_mtime == list->dir_stat.st_mtime)
 	{
-		return (sort_by_letter(new, list, options.reverse));
+		if (options.sort_time && new->dir_stat.st_mtimespec.tv_nsec \
+			== list->dir_stat.st_mtimespec.tv_nsec)
+			return (sort_by_letter(new, list, options.reverse));
+		else
+			return ((options.sort_time && !options.reverse
+					&& new->dir_stat.st_mtimespec.tv_nsec \
+					> list->dir_stat.st_mtimespec.tv_nsec)
+				|| (options.sort_time && options.reverse
+					&& new->dir_stat.st_mtimespec.tv_nsec \
+					< list->dir_stat.st_mtimespec.tv_nsec));
 	}
 	return ((options.sort_time && !options.reverse
 			&& new->dir_stat.st_mtime > list->dir_stat.st_mtime)

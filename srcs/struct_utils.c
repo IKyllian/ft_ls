@@ -66,6 +66,7 @@ t_dirInfos	*init_dir_info(char dir_name[256], char *path, int is_sub_dir)
 	new->is_sub_dir = is_sub_dir;
 	new->sub_dir = NULL;
 	new->next = NULL;
+	new->is_file = 0;
 	new->blocks_size = 0;
 	return (new);
 }

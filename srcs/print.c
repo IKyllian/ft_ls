@@ -26,7 +26,7 @@ char	get_file_attributes(t_dirInfos *dir)
 {
 	char	buff2[101];
 
-	if (listxattr(dir->path, buff2, sizeof(buff2)) > 0)
+	if (listxattr(dir->path, buff2, sizeof(buff2), XATTR_NOFOLLOW) > 0)
 		return ('@');
 	return (' ');
 }
@@ -77,7 +77,7 @@ void	print_dir_infos(int is_sub, t_dirInfos **list, t_dirInfos	**head, \
 		(*list) = (*list)->sub_dir;
 		(*head) = (*head)->sub_dir;
 	}
-	if (datas->options.long_format && (*list))
+	if (datas->options.long_format && (*list) && !(*list)->is_file)
 		ft_printf("total %i\n", (*list)->blocks_size / 2);
 }
 
