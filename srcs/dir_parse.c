@@ -52,10 +52,6 @@ t_dirInfos	*browse_dir(t_datas *datas, DIR **p_dir, t_dirInfos **dirList, \
 	str = NULL;
 	heads = init_heads_list(dirList);
 	currt_dir = readdir(*p_dir);
-	// printf("azeaze\n");
-	if (currt_dir == NULL)
-		printf("NULL\n");
-
 	while (currt_dir != NULL)
 	{
 		if (skip_dir(p_dir, &currt_dir, datas))

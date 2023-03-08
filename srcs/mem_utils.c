@@ -57,15 +57,19 @@ void	*free_mem_dir(t_dirInfos **list, char **init_path, char **path)
 	return (NULL);
 }
 
-void	free_array(char ***arg_list)
+void	free_arg_list(t_arg_list **arg_list)
 {
-	int	i;
+	t_arg_list	*list;
+	t_arg_list	*next;
 
-	i = 0;
-	while ((*arg_list)[i])
+	list = *arg_list;
+	while (list)
 	{
-		free((*arg_list)[i]);
-		i++;
+		if (list->dir_name)
+			free(list->dir_name);
+		next = list->next;
+		free(list);
+		list = next;
 	}
-	free(*arg_list);
+	*arg_list = NULL;
 }

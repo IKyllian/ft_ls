@@ -12,27 +12,29 @@
 
 #include "ft_ls.h"
 
-int	flag_check(char c, t_options *options, char ***arg_list)
+int	flag_check(char c, t_options *options, t_arg_list **arg_list)
 {
 	if (!char_is_flag(c))
 	{
 		ft_printf("ft_ls : invalid option -- %c\n", c);
 		ft_printf("usage: ls [-Ralrt] [file ...] \n");
-		free_array(arg_list);
+		free_arg_list(arg_list);
 		return (-1);
 	}
 	fill_options(c, options);
 	return (0);
 }
 
-int	check_dir_exist(char *path)
+int	check_dir_exist(char *path) // 1 = file | 0 = folder
 {
 	DIR	*p_dir;
 	errno = 0;
 
 	p_dir = opendir(path);
-	if (p_dir == NULL && errno != 20)
+	if (p_dir == NULL)
 	{
+		if (errno == 20)
+			return (1);
 		ft_printf("ft_ls: cannot access '%s': No such file or directory\n", \
 			path);
 		return (-1);
@@ -42,61 +44,73 @@ int	check_dir_exist(char *path)
 	return (0);
 }
 
-int	arg_check(char *av, t_options *options, char ***arg_list, int *idx)
-{
-	int	j;
-	int	is_flag;
-
-	is_flag = 0;
-	j = -1;
-	while (av[++j])
-	{
-		if (j == 0 && av[j] == '-')
-			is_flag = 1;
-		else if (is_flag)
-		{
-			if (flag_check(av[j], options, arg_list) < 0)
-				return (-1);
-		}
-		else
-		{
-			if (check_dir_exist(av) != -1)
-				(*arg_list)[(*idx)++] = ft_strdup(av);
-			break ;
-		}
-	}
-	return (0);
-}
-
-int	parse_exec(char **av, int ac, t_options *options, char ***arg_list)
+int	search_options(char **av, t_options *options, t_arg_list **arg_list)
 {
 	int	i;
-	int	idx;
+	int	j;
+	int	is_flag;
+	int	count;
 
 	i = 0;
-	idx = 0;
+	count = 0;
 	while (av[++i])
 	{
-		if (arg_check(av[i], options, arg_list, &idx) < 0)
-			return (-1);
+		is_flag = 0;
+		j = -1;
+		while (av[i][++j])
+		{
+			if (ft_strlen(av[i]) > 1 && j == 0 && av[i][j] == '-')
+			{
+				is_flag = 1;
+				count++;
+			}
+			else if (is_flag)
+			{
+				if (flag_check(av[i][j], options, arg_list) < 0)
+					return (-1);
+				
+			}
+			else
+				break;
+		}
 	}
-	if (idx == 0 && ac > 1)
+	return (count);
+}
+
+int	parse_exec(char **av, t_options *options, t_arg_list **arg_list)
+{
+	int	i;
+	int	ret;
+
+	i = 0;
+	ret = 0;
+	while (av[++i])
 	{
-		free(*arg_list);
-		return (-1);
+		if (ft_strlen(av[i]) > 1 && av[i][0] == '-')
+			continue;
+		ret = check_dir_exist(av[i]);
+		if (ret != -1)
+			*arg_list = add_arg(av[i], ret, arg_list, *options);
 	}
-	(*arg_list)[idx] = NULL;
 	return (0);
 }
 
-char	**parser(char **av, int ac, t_options *options)
+t_arg_list	*parser(char **av, int ac, t_options *options)
 {
-	char	**arg_list;
+	t_arg_list	*arg_list;
+	int			ret;
 
-	arg_list = (char **)malloc(sizeof(char *) * ac);
-	if (!arg_list)
+	arg_list = NULL;
+	ret = search_options(av, options, &arg_list);
+	if (ret < 0)
 		return (NULL);
-	if (parse_exec(av, ac, options, &arg_list) < 0)
-		return (NULL);
+	if (ret == (ac - 1))
+	{
+		ret = check_dir_exist(".");
+		if (ret != -1)
+			arg_list = add_arg(".", ret, &arg_list, *options);
+	}
+	else
+		parse_exec(av, options, &arg_list);
 	return (arg_list);
 }

@@ -16,6 +16,8 @@ void	print_dir_name(char *name, mode_t mode)
 {
 	if (S_ISDIR(mode))
 			ft_printf("%s%s%s", COLOR_CYAN, name, COLOR_DEFAULT);
+	else if (S_ISLNK(mode))
+		ft_printf("%s%s%s", COLOR_PURPLE, name, COLOR_DEFAULT);
 	else if (mode & S_IXUSR)
 		ft_printf("%s%s%s", COLOR_GREEN, name, COLOR_DEFAULT);
 	else
@@ -46,7 +48,7 @@ void	print_items(t_dirInfos *dir, int size[SIZE_LENGTH], char *dir_time, \
 	{
 		ft_bzero(buff, NAME_MAX + 1);
 		readlink(dir->path, buff, NAME_MAX + 1);
-		ft_printf("%s -> %s", dir->dir_name, buff);
+		ft_printf("%s%s%s -> %s", COLOR_PURPLE, dir->dir_name, COLOR_DEFAULT, buff);
 	}
 	else
 		print_dir_name(dir->dir_name, dir->dir_stat.st_mode);

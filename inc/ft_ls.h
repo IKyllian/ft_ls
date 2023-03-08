@@ -44,7 +44,7 @@
 # include <limits.h>
 # include <pwd.h>
 # include <errno.h>
-# include "../libft/libft.h"
+# include "libft.h"
 
 # define SIZE_LENGTH 4
 # define SIZE_PERM 12
@@ -52,6 +52,7 @@
 # define COLOR_DEFAULT	"\033[0m"
 # define COLOR_CYAN		"\033[1;36m"
 # define COLOR_GREEN	"\033[1;32m"
+# define COLOR_PURPLE	"\033[0;35m"
 
 typedef struct s_options {
 	int	reverse;
@@ -80,6 +81,13 @@ typedef struct s_dirInfos {
 	struct s_dirInfos	*next;
 }						t_dirInfos;
 
+typedef struct s_arg_list {
+	struct stat			dir_stat;
+	char				*dir_name;
+	int					is_file;
+	struct s_arg_list	*next;
+}				t_arg_list;
+
 typedef struct s_heads_list {
 	t_dirInfos	*list;
 	t_dirInfos	*ret;
@@ -100,7 +108,7 @@ int				max_nbr(int a, int b);
 void			free_lst(t_dirInfos **dirList);
 void			mem_check(void *pointer, t_dirInfos **dirList);
 void			*free_mem_dir(t_dirInfos **list, char **init_path, char **path);
-void			free_array(char ***arg_list);
+void			free_arg_list(t_arg_list **arg_list);
 
 void			set_permision(struct stat dir_stat, char str[SIZE_PERM]);
 char			set_file_type(mode_t mode);
@@ -116,13 +124,18 @@ t_heads_list	init_heads_list(t_dirInfos **dirList);
 int				dup_strings(t_dirInfos **new, char dir_name[256], \
 	struct stat dir_stat, char *path);
 
+t_arg_list		*create_arg(char *arg, int is_file);
+t_arg_list		*add_sort(t_arg_list **list, t_arg_list **last, \
+	t_arg_list **begin, t_arg_list **new);
+t_arg_list		*add_arg(char *path, int is_file, t_arg_list **arg_list, \
+	t_options options);
+
 t_dirInfos		*ft_lstadd_first(int size[SIZE_LENGTH], \
 	t_heads_list *heads_list, t_dirInfos **new, t_subDir_infos *subDirInfos);
 t_dirInfos		*ft_lstadd_second(t_dirInfos **new, t_heads_list *heads_list, \
 	t_options	options);
 
-// int				parser(char **av, t_options *options);
-char				**parser(char **av, int ac, t_options *options);
+t_arg_list			*parser(char **av, int ac, t_options *options);
 
 t_dirInfos		*read_dir(t_datas *datas, char *path, int is_sub_dir, \
 	t_dirInfos **dirList);
@@ -130,6 +143,8 @@ t_dirInfos		*read_dir(t_datas *datas, char *path, int is_sub_dir, \
 int				sort_by_letter(t_dirInfos *new, t_dirInfos *list, int reverse);
 int				sort_by_time(t_dirInfos *new, t_dirInfos *list, \
 	t_options options);
+int				sort_arg_by_time(t_arg_list *new, t_arg_list *list, t_options options);
+int				sort_arg_by_letter(t_arg_list *new, t_arg_list *list, int reverse);
 
 t_dirInfos		*read_dir(t_datas *datas, char *path, int is_sub_dir, \
 	t_dirInfos **dirList);

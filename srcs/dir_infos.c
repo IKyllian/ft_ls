@@ -21,18 +21,28 @@ void	set_permision(struct stat dir_stat, char str[SIZE_PERM])
 		str[2] = 'w';
 	if (dir_stat.st_mode & S_IXUSR)
 		str[3] = 'x';
+	if (!(dir_stat.st_mode & S_IXUSR) && dir_stat.st_mode & S_ISUID)
+		str[3] = 'S';
+	else if ( dir_stat.st_mode & S_ISUID)
+		str[3] = 's';
 	if (dir_stat.st_mode & S_IRGRP)
 		str[4] = 'r';
 	if (dir_stat.st_mode & S_IWGRP)
 		str[5] = 'w';
 	if (dir_stat.st_mode & S_IXGRP)
 		str[6] = 'x';
+	if (!(dir_stat.st_mode & S_IXGRP) && dir_stat.st_mode & S_ISGID)
+		str[6] = 'S';
+	if (dir_stat.st_mode & S_ISGID)
+		str[6] = 's';
 	if (dir_stat.st_mode & S_IROTH)
 		str[7] = 'r';
 	if (dir_stat.st_mode & S_IWOTH)
 		str[8] = 'w';
 	if (dir_stat.st_mode & S_IXOTH)
 		str[9] = 'x';
+	if (dir_stat.st_mode & S_ISVTX)
+		str[9] = 't';
 }
 
 char	set_file_type(mode_t mode)

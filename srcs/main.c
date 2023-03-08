@@ -31,51 +31,48 @@ int	last_exec(t_dirInfos **dir_list, t_datas *datas)
 	return (0);
 }
 
-int	ls_exec(char **arg_list, t_datas *datas, t_dirInfos **dir_list)
+int	ls_exec(t_arg_list **arg_list, t_datas *datas, t_dirInfos **dir_list)
 {
-	int	i;
-	int	length;
+	t_arg_list	*list;
+	int			last_type;
 
-	i = -1;
-	length = array_length(arg_list);
-	if (arg_list[0] == NULL)
-		*dir_list = read_dir(datas, ".", 0, dir_list);
-	else
+	list = *arg_list;
+	last_type = -1;
+	while (list)
 	{
-		while (arg_list[++i])
+		if (last_type != -1 && ((!last_type)
+			|| (last_type == 1 && !list->is_file)))
+			ft_putchar_fd('\n', 1);
+		if (!list->is_file && last_type != -1)
 		{
-			if (i != 0)
-				ft_putchar_fd('\n', 1);
-			if (length > 1)
-			{
-				ft_putstr_fd(arg_list[i], 1);
-				ft_putstr_fd(":\n", 1);
-			}
-			*dir_list = read_dir(datas, arg_list[i], 0, dir_list);
-			if (last_exec(dir_list, datas) < 0)
-				return (-1);
+			ft_putstr_fd(list->dir_name, 1);
+			ft_putstr_fd(":\n", 1);
 		}
-		return (0);
+		*dir_list = read_dir(datas, list->dir_name, 0, dir_list);
+		if (last_exec(dir_list, datas) < 0)
+			return (-1);
+		last_type = list->is_file;
+		list = list->next;
 	}
-	return (last_exec(dir_list, datas));
+	return (0);
 }
 
 int	main(int ac, char **av)
 {	
 	t_dirInfos	*dir_list;
 	t_datas		datas;
-	char		**arg_list;
+	t_arg_list *arg_list;
 
 	dir_list = NULL;
 	main_struct_init(&datas);
 	arg_list = parser(av, ac, &datas.options);
 	if (arg_list == NULL)
 		return (-1);
-	if (ls_exec(arg_list, &datas, &dir_list) < 0)
+	if (ls_exec(&arg_list, &datas, &dir_list) < 0)
 	{
-		free_array(&arg_list);
+		free_arg_list(&arg_list);
 		return (-1);
 	}
-	free_array(&arg_list);
+	free_arg_list(&arg_list);
 	return (0);
 }
