@@ -19,6 +19,7 @@ void	main_struct_init(t_datas *datas)
 	datas->options.show_hidden = 0;
 	datas->options.list_subdir = 0;
 	datas->options.sort_time = 0;
+	datas->error = 0;
 	ft_bzero(datas->size, sizeof(datas->size));
 }
 

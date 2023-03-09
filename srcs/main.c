@@ -49,6 +49,10 @@ int	ls_exec(t_arg_list **arg_list, t_datas *datas, t_dirInfos **dir_list)
 			ft_putstr_fd(":\n", 1);
 		}
 		*dir_list = read_dir(datas, list->dir_name, 0, dir_list);
+		if (datas->error) {
+			free_lst(dir_list);
+			return (-1);
+		}
 		if (last_exec(dir_list, datas) < 0)
 			return (-1);
 		last_type = list->is_file;

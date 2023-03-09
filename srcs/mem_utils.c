@@ -22,39 +22,25 @@ void	free_lst(t_dirInfos **dirList)
 	{
 		if (list->sub_dir)
 			free_lst(&list->sub_dir);
-		if (list->path)
-			free(list->path);
-		if (list->dir_name)
-			free(list->dir_name);
-		if (list->owner)
-			free(list->owner);
-		if (list->gr_name)
-			free(list->gr_name);
 		next = list->next;
-		free(list);
+		free_lst_item(&list);
 		list = next;
 	}
 	*dirList = NULL;
 }
 
-void	mem_check(void *pointer, t_dirInfos **dirList)
+void	free_lst_item(t_dirInfos **item)
 {
-	if (pointer == NULL)
-	{
-		free_lst(dirList);
-		exit(-1);
-	}
-}
-
-void	*free_mem_dir(t_dirInfos **list, char **init_path, char **path)
-{
-	if (*init_path)
-		free(*init_path);
-	*init_path = NULL;
-	if (*path)
-		free(*path);
-	free_lst(list);
-	return (NULL);
+	if ((*item)->path)
+		free((*item)->path);
+	if ((*item)->dir_name)
+		free((*item)->dir_name);
+	if ((*item)->owner)
+		free((*item)->owner);
+	if ((*item)->gr_name)
+		free((*item)->gr_name);
+	free((*item));
+	*item = NULL;
 }
 
 void	free_arg_list(t_arg_list **arg_list)

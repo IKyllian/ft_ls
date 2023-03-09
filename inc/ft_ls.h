@@ -97,6 +97,7 @@ typedef struct s_heads_list {
 typedef struct s_datas {
 	t_options	options;
 	int			size[SIZE_LENGTH];
+	int			error;
 }	t_datas;
 
 int				char_is_flag(char c);
@@ -105,10 +106,9 @@ int				is_untrack_folder(char *str);
 int				is_hidden_folder(char *str);
 int				max_nbr(int a, int b);
 
-void			free_lst(t_dirInfos **dirList);
-void			mem_check(void *pointer, t_dirInfos **dirList);
-void			*free_mem_dir(t_dirInfos **list, char **init_path, char **path);
+void			free_lst_item(t_dirInfos **item);
 void			free_arg_list(t_arg_list **arg_list);
+void			free_lst(t_dirInfos **dirList);
 
 void			set_permision(struct stat dir_stat, char str[SIZE_PERM]);
 char			set_file_type(mode_t mode);
@@ -130,8 +130,8 @@ t_arg_list		*add_sort(t_arg_list **list, t_arg_list **last, \
 t_arg_list		*add_arg(char *path, int is_file, t_arg_list **arg_list, \
 	t_options options);
 
-t_dirInfos		*ft_lstadd_first(int size[SIZE_LENGTH], \
-	t_heads_list *heads_list, t_dirInfos **new, t_subDir_infos *subDirInfos);
+t_dirInfos	*ft_lstadd_first(t_datas *datas, t_heads_list *heads_list, \
+	t_dirInfos **new, t_subDir_infos *subDirInfos);
 t_dirInfos		*ft_lstadd_second(t_dirInfos **new, t_heads_list *heads_list, \
 	t_options	options);
 
@@ -153,6 +153,6 @@ t_dirInfos		*browse_dir(t_datas *datas, DIR **p_dir, t_dirInfos **dirList, \
 int				skip_dir(DIR **p_dir, struct dirent **currt_dir, \
 	t_datas *datas);
 t_dirInfos		*fill_variable(t_subDir_infos *sub_dir_infos, \
-	struct dirent *current_dir, t_dirInfos **dirList, char **str);
+	struct dirent *current_dir, char **str);
 
 #endif

@@ -23,10 +23,10 @@ t_dirInfos	*change_head_list(t_dirInfos **new, t_dirInfos *list, \
 	return (*new);
 }
 
-t_dirInfos	*ft_lstadd_first(int size[SIZE_LENGTH], t_heads_list *heads_list, \
+t_dirInfos	*ft_lstadd_first(t_datas *datas, t_heads_list *heads_list, \
 	t_dirInfos **new, t_subDir_infos *subDirInfos)
 {
-	set_column_size(size, *new);
+	set_column_size(datas->size, *new);
 	if (heads_list->list == NULL)
 	{
 		(*new)->blocks_size += (*new)->dir_stat.st_blocks;
@@ -46,7 +46,7 @@ t_dirInfos	*ft_lstadd_first(int size[SIZE_LENGTH], t_heads_list *heads_list, \
 		subDirInfos->is_first_dir = 0;
 		return (*new);
 	}
-	return (NULL);
+	return (ft_lstadd_second(new, heads_list, datas->options));
 }
 
 t_dirInfos	*ft_lstadd_second(t_dirInfos **new, t_heads_list *heads_list, \

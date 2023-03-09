@@ -13,14 +13,16 @@
 #include "ft_ls.h"
 
 t_dirInfos	*fill_variable(t_subDir_infos *sub_dir_infos, \
-	struct dirent *current_dir, t_dirInfos **dirList, char **str)
+	struct dirent *current_dir, char **str)
 {
 	t_dirInfos	*new;
 
 	*str = ft_strjoin(sub_dir_infos->init_path, current_dir->d_name);
-	mem_check(*str, dirList);
+	if (!*str)
+		return (NULL);
 	new = init_dir_info(current_dir->d_name, *str, sub_dir_infos->is_sub_dir);
-	mem_check(new, dirList);
+	if (!new)
+		return (NULL);
 	return (new);
 }
 
@@ -56,16 +58,19 @@ t_dirInfos	*browse_dir(t_datas *datas, DIR **p_dir, t_dirInfos **dirList, \
 	{
 		if (skip_dir(p_dir, &currt_dir, datas))
 			continue ;
-		new = fill_variable(sub_dir_infos, currt_dir, dirList, &str);
-		heads.ret = ft_lstadd_first(datas->size, &heads, &new, sub_dir_infos);
-		if (heads.ret == NULL)
-			heads.ret = ft_lstadd_second(&new, &heads, datas->options);
-		if (heads.ret == NULL)
-			free_mem_dir(&heads.list, &sub_dir_infos->init_path, &str);
+		new = fill_variable(sub_dir_infos, currt_dir, &str);
+		if (!new)
+		{
+			if (str)
+				free(str);
+			datas->error = 1;
+			return (heads.list);
+		}
+		heads.ret = ft_lstadd_first(datas, &heads, &new, sub_dir_infos);
 		if (datas->options.list_subdir && S_ISDIR(heads.ret->dir_stat.st_mode)
 			&& !is_untrack_folder(currt_dir->d_name)
 			&& read_dir(datas, str, 1, &heads.ret) == NULL)
-			return (free_mem_dir(&heads.list, &sub_dir_infos->init_path, &str));
+				return (heads.list);
 		loop_end(&str, &currt_dir, p_dir);
 	}
 	return (heads.list);
@@ -108,7 +113,11 @@ t_dirInfos	*read_dir(t_datas *datas, char *path, int is_sub_dir, \
 		sub_dir_infos.init_path = ft_strjoin(path, NULL);
 	else
 		sub_dir_infos.init_path = ft_strjoin(path, "/");
-	mem_check(sub_dir_infos.init_path, dirList);
+	if (!sub_dir_infos.init_path)
+	{
+		datas->error = 1;
+		return (*dirList);
+	}
 	p_dir = opendir(path);
 	if (p_dir == NULL)
 	{
@@ -120,7 +129,10 @@ t_dirInfos	*read_dir(t_datas *datas, char *path, int is_sub_dir, \
 		}
 		ft_printf("ft_ls: cannot access '%s': No such file or directory\n", \
 			path);
-		mem_check(p_dir, dirList);
+		if (sub_dir_infos.init_path)
+			free(sub_dir_infos.init_path);
+		datas->error = 1;
+		return (*dirList);
 	}
 	ret = browse_dir(datas, &p_dir, dirList, &sub_dir_infos);
 	if (sub_dir_infos.init_path)
