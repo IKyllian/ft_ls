@@ -38,13 +38,31 @@ int	dup_strings(t_dirInfos **new, char dir_name[256], struct stat dir_stat, \
 		return (-1);
 	(*new)->path = ft_strdup(path);
 	if (!(*new)->path)
+	{
+		if ((*new)->dir_name)
+			free((*new)->dir_name);
 		return (-1);
+	}
 	(*new)->owner = ft_strdup(owner_infos->pw_name);
 	if (!(*new)->owner)
+	{
+		if ((*new)->dir_name)
+			free((*new)->dir_name);
+		if ((*new)->path)
+			free((*new)->path);
 		return (-1);
+	}
 	(*new)->gr_name = ft_strdup(group_infos->gr_name);
 	if (!(*new)->gr_name)
+	{
+		if ((*new)->dir_name)
+			free((*new)->dir_name);
+		if ((*new)->path)
+			free((*new)->path);
+		if ((*new)->owner)
+			free((*new)->owner);
 		return (-1);
+	}
 	return (0);
 }
 
@@ -62,7 +80,11 @@ t_dirInfos	*init_dir_info(char dir_name[256], char *path, int is_sub_dir)
 	if (!new)
 		return (NULL);
 	if (dup_strings(&new, dir_name, stat_buffer, path) < 0)
+	{
+		if (new)
+			free_lst_item(&new);
 		return (NULL);
+	}
 	new->dir_stat = stat_buffer;
 	new->is_sub_dir = is_sub_dir;
 	new->sub_dir = NULL;

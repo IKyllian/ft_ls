@@ -86,11 +86,15 @@ t_dirInfos	*init_for_file(char *path)
 		ft_printf("Error while Stat\n");
 		return (NULL);
 	}
-	new = (t_dirInfos *)malloc(sizeof(t_dirInfos));
+	new = (t_dirInfos *)(sizeof(t_dirInfos));
 	if (!new)
 		return (NULL);
 	if (dup_strings(&new, path, stat_buffer, path) < 0)
+	{
+		if (new)
+			free_lst_item(&new);
 		return (NULL);
+	}
 	new->dir_stat = stat_buffer;
 	new->is_sub_dir = 0;
 	new->sub_dir = NULL;

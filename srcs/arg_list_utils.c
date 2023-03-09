@@ -42,6 +42,8 @@ t_arg_list *add_arg(char *path, int is_file, t_arg_list **arg_list, t_options op
 	begin = *arg_list;
 	last = NULL;
 	new = create_arg(path, is_file);
+	if (!new)
+		return (NULL);
 	if (*arg_list == NULL)
 	{
 		*arg_list = new;

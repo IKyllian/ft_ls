@@ -81,6 +81,7 @@ int	parse_exec(char **av, t_options *options, t_arg_list **arg_list)
 {
 	int	i;
 	int	ret;
+	t_arg_list *ret_arg;
 
 	i = 0;
 	ret = 0;
@@ -90,7 +91,16 @@ int	parse_exec(char **av, t_options *options, t_arg_list **arg_list)
 			continue;
 		ret = check_dir_exist(av[i]);
 		if (ret != -1)
-			*arg_list = add_arg(av[i], ret, arg_list, *options);
+		{
+			ret_arg = add_arg(av[i], ret, arg_list, *options);
+			if (ret_arg)
+				*arg_list = add_arg(av[i], ret, arg_list, *options);
+			else
+			{
+				free_arg_list(arg_list);
+				return (-1);
+			}
+		}	
 	}
 	return (0);
 }
@@ -110,7 +120,10 @@ t_arg_list	*parser(char **av, int ac, t_options *options)
 		if (ret != -1)
 			arg_list = add_arg(".", ret, &arg_list, *options);
 	}
-	else
-		parse_exec(av, options, &arg_list);
+	else 
+	{
+		if (parse_exec(av, options, &arg_list) < 0)
+			return (NULL);
+	}
 	return (arg_list);
 }
