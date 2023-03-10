@@ -13,7 +13,9 @@ LST_SRCS =  main.c \
 			lst_utils.c \
 			sort.c \
 			dir_parse.c \
-			arg_list_utils.c
+			arg_list_utils.c \
+			dup.c \
+			dir_parse_utils.c
 
 LST_OBJS = $(LST_SRCS:.c=.o)
 

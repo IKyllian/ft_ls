@@ -2,7 +2,7 @@
 
 t_arg_list *create_arg(char *arg, int is_file)
 {
-	t_arg_list *new;
+	t_arg_list	*new;
 	struct stat	stat_buffer;
 
 	if (lstat(arg, &stat_buffer) < 0)
@@ -31,6 +31,12 @@ t_arg_list *add_sort(t_arg_list **list, t_arg_list **last, t_arg_list **begin, t
 	return (*new);
 }
 
+t_arg_list *first_arg_node(t_arg_list **arg_list, t_arg_list **new)
+{
+	*arg_list = *new;
+	return (*new);
+}
+
 t_arg_list *add_arg(char *path, int is_file, t_arg_list **arg_list, t_options options)
 {
 	t_arg_list	*list;
@@ -45,10 +51,7 @@ t_arg_list *add_arg(char *path, int is_file, t_arg_list **arg_list, t_options op
 	if (!new)
 		return (NULL);
 	if (*arg_list == NULL)
-	{
-		*arg_list = new;
-		return (new);
-	}
+		return (first_arg_node(arg_list, &new));
 	while (list)
 	{
 		if ((sort_arg_by_time(new, list, options)) || (!options.sort_time

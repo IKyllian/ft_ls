@@ -109,6 +109,7 @@ int				max_nbr(int a, int b);
 void			free_lst_item(t_dirInfos **item);
 void			free_arg_list(t_arg_list **arg_list);
 void			free_lst(t_dirInfos **dirList);
+t_dirInfos		*dir_error(t_dirInfos **head, char *ptr, t_datas *datas);
 
 void			set_permision(struct stat dir_stat, char str[SIZE_PERM]);
 char			set_file_type(mode_t mode);
@@ -123,6 +124,7 @@ t_subDir_infos	init_sub_dir_infos(int is_sub_dir);
 t_heads_list	init_heads_list(t_dirInfos **dirList);
 int				dup_strings(t_dirInfos **new, char dir_name[256], \
 	struct stat dir_stat, char *path);
+t_dirInfos		*init_for_file(char *path);
 
 t_arg_list		*create_arg(char *arg, int is_file);
 t_arg_list		*add_sort(t_arg_list **list, t_arg_list **last, \
@@ -154,5 +156,10 @@ int				skip_dir(DIR **p_dir, struct dirent **currt_dir, \
 	t_datas *datas);
 t_dirInfos		*fill_variable(t_subDir_infos *sub_dir_infos, \
 	struct dirent *current_dir, char **str);
+
+char			*join_path(char *path);
+t_dirInfos		*create_file(char **init_path, char *path);
+int				skip_dir(DIR **p_dir, struct dirent **currt_dir, t_datas *datas);
+void			loop_end(char **str, struct dirent **currt_dir, DIR **p_dir);
 
 #endif

@@ -59,16 +59,12 @@ int	search_options(char **av, t_options *options, t_arg_list **arg_list)
 		j = -1;
 		while (av[i][++j])
 		{
-			if (ft_strlen(av[i]) > 1 && j == 0 && av[i][j] == '-')
-			{
+			if (ft_strlen(av[i]) > 1 && j == 0 && av[i][j] == '-' && ++count)
 				is_flag = 1;
-				count++;
-			}
 			else if (is_flag)
 			{
 				if (flag_check(av[i][j], options, arg_list) < 0)
 					return (-1);
-				
 			}
 			else
 				break;
@@ -93,8 +89,8 @@ int	parse_exec(char **av, t_options *options, t_arg_list **arg_list)
 		if (ret != -1)
 		{
 			ret_arg = add_arg(av[i], ret, arg_list, *options);
-			if (ret_arg)
-				*arg_list = add_arg(av[i], ret, arg_list, *options);
+			if (ret_arg != NULL)
+				*arg_list = ret_arg;
 			else
 			{
 				free_arg_list(arg_list);

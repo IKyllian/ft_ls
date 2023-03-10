@@ -74,9 +74,11 @@ int	sort_arg_by_time(t_arg_list *new, t_arg_list *list, t_options options)
 {
 	if (new->is_file && !list->is_file)
 		return (1);
-	if (options.sort_time && is_same_type(new->is_file, list->is_file) && new->dir_stat.st_mtime == list->dir_stat.st_mtime)
+	if (options.sort_time && is_same_type(new->is_file, list->is_file)
+		&& new->dir_stat.st_mtime == list->dir_stat.st_mtime)
 	{
-		if (options.sort_time && is_same_type(new->is_file, list->is_file) && new->dir_stat.st_mtimespec.tv_nsec \
+		if (options.sort_time && is_same_type(new->is_file, list->is_file)
+			&& new->dir_stat.st_mtimespec.tv_nsec \
 			== list->dir_stat.st_mtimespec.tv_nsec)
 			return (sort_arg_by_letter(new, list, options.reverse));
 		else

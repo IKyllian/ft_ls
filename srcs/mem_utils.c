@@ -59,3 +59,12 @@ void	free_arg_list(t_arg_list **arg_list)
 	}
 	*arg_list = NULL;
 }
+
+t_dirInfos *dir_error(t_dirInfos **head, char *ptr, t_datas *datas)
+{
+	if (ptr)
+		free(ptr);
+	(void)ptr;
+	datas->error = 1;
+	return (*head);
+}

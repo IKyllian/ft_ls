@@ -26,23 +26,6 @@ t_dirInfos	*fill_variable(t_subDir_infos *sub_dir_infos, \
 	return (new);
 }
 
-int	skip_dir(DIR **p_dir, struct dirent **currt_dir, t_datas *datas)
-{
-	if (!datas->options.show_hidden && is_hidden_folder((*currt_dir)->d_name))
-	{
-		(*currt_dir) = readdir(*p_dir);
-		return (1);
-	}
-	return (0);
-}
-
-void	loop_end(char **str, struct dirent **currt_dir, DIR **p_dir)
-{
-	if (*str)
-		free(*str);
-	*currt_dir = readdir(*p_dir);
-}
-
 t_dirInfos	*browse_dir(t_datas *datas, DIR **p_dir, t_dirInfos **dirList, \
 	t_subDir_infos *sub_dir_infos)
 {
@@ -60,12 +43,7 @@ t_dirInfos	*browse_dir(t_datas *datas, DIR **p_dir, t_dirInfos **dirList, \
 			continue ;
 		new = fill_variable(sub_dir_infos, currt_dir, &str);
 		if (!new)
-		{
-			if (str)
-				free(str);
-			datas->error = 1;
-			return (heads.list);
-		}
+			return (dir_error(&heads.list, str, datas));
 		heads.ret = ft_lstadd_first(datas, &heads, &new, sub_dir_infos);
 		if (datas->options.list_subdir && S_ISDIR(heads.ret->dir_stat.st_mode)
 			&& !is_untrack_folder(currt_dir->d_name)
@@ -74,34 +52,6 @@ t_dirInfos	*browse_dir(t_datas *datas, DIR **p_dir, t_dirInfos **dirList, \
 		loop_end(&str, &currt_dir, p_dir);
 	}
 	return (heads.list);
-}
-
-t_dirInfos	*init_for_file(char *path)
-{
-	t_dirInfos	*new;
-	struct stat	stat_buffer;
-
-	if (lstat(path, &stat_buffer) < 0)
-	{
-		ft_printf("Error while Stat\n");
-		return (NULL);
-	}
-	new = (t_dirInfos *)(sizeof(t_dirInfos));
-	if (!new)
-		return (NULL);
-	if (dup_strings(&new, path, stat_buffer, path) < 0)
-	{
-		if (new)
-			free_lst_item(&new);
-		return (NULL);
-	}
-	new->dir_stat = stat_buffer;
-	new->is_sub_dir = 0;
-	new->sub_dir = NULL;
-	new->next = NULL;
-	new->is_file = 1;
-	new->blocks_size = 0;
-	return (new);
 }
 
 t_dirInfos	*read_dir(t_datas *datas, char *path, int is_sub_dir, \
@@ -113,30 +63,17 @@ t_dirInfos	*read_dir(t_datas *datas, char *path, int is_sub_dir, \
 
 	errno = 0;
 	sub_dir_infos = init_sub_dir_infos(is_sub_dir);
-	if (path && path[ft_strlen(path) - 1] == '/')
-		sub_dir_infos.init_path = ft_strjoin(path, NULL);
-	else
-		sub_dir_infos.init_path = ft_strjoin(path, "/");
+	sub_dir_infos.init_path = join_path(path);
 	if (!sub_dir_infos.init_path)
-	{
-		datas->error = 1;
-		return (*dirList);
-	}
+		return (dir_error(dirList, NULL, datas));
 	p_dir = opendir(path);
 	if (p_dir == NULL)
 	{
 		if (errno == 20)
-		{
-			if (sub_dir_infos.init_path)
-				free(sub_dir_infos.init_path);
-			return (init_for_file(path));
-		}
+			return (create_file(&sub_dir_infos.init_path, path));
 		ft_printf("ft_ls: cannot access '%s': No such file or directory\n", \
 			path);
-		if (sub_dir_infos.init_path)
-			free(sub_dir_infos.init_path);
-		datas->error = 1;
-		return (*dirList);
+		return (dir_error(dirList, sub_dir_infos.init_path, datas));
 	}
 	ret = browse_dir(datas, &p_dir, dirList, &sub_dir_infos);
 	if (sub_dir_infos.init_path)

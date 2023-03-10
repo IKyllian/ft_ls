@@ -12,6 +12,22 @@
 
 #include "ft_ls.h"
 
+void	setuid_perm(struct stat dir_stat, char str[SIZE_PERM])
+{
+	if (!(dir_stat.st_mode & S_IXUSR) && dir_stat.st_mode & S_ISUID)
+		str[3] = 'S';
+	else if ( dir_stat.st_mode & S_ISUID)
+		str[3] = 's';
+}
+
+void	setgid_perm(struct stat dir_stat, char str[SIZE_PERM])
+{
+	if (!(dir_stat.st_mode & S_IXGRP) && dir_stat.st_mode & S_ISGID)
+		str[6] = 'S';
+	else if (dir_stat.st_mode & S_ISGID)
+		str[6] = 's';
+}
+
 void	set_permision(struct stat dir_stat, char str[SIZE_PERM])
 {
 	str[0] = set_file_type(dir_stat.st_mode);
@@ -21,20 +37,14 @@ void	set_permision(struct stat dir_stat, char str[SIZE_PERM])
 		str[2] = 'w';
 	if (dir_stat.st_mode & S_IXUSR)
 		str[3] = 'x';
-	if (!(dir_stat.st_mode & S_IXUSR) && dir_stat.st_mode & S_ISUID)
-		str[3] = 'S';
-	else if ( dir_stat.st_mode & S_ISUID)
-		str[3] = 's';
+	setuid_perm(dir_stat, str);
 	if (dir_stat.st_mode & S_IRGRP)
 		str[4] = 'r';
 	if (dir_stat.st_mode & S_IWGRP)
 		str[5] = 'w';
 	if (dir_stat.st_mode & S_IXGRP)
 		str[6] = 'x';
-	if (!(dir_stat.st_mode & S_IXGRP) && dir_stat.st_mode & S_ISGID)
-		str[6] = 'S';
-	if (dir_stat.st_mode & S_ISGID)
-		str[6] = 's';
+	setgid_perm(dir_stat, str);
 	if (dir_stat.st_mode & S_IROTH)
 		str[7] = 'r';
 	if (dir_stat.st_mode & S_IWOTH)
