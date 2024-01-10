@@ -7,6 +7,7 @@ LST_SRCS =  main.c \
 			utils.c \
 			dir_infos.c \
 			mem_utils.c \
+			print_utils.c \
 			print.c \
 			struct_utils.c \
 			parser.c \

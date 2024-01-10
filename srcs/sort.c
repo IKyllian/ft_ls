@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 10:33:52 by kdelport          #+#    #+#             */
-/*   Updated: 2023/03/06 11:23:49 by kdelport         ###   ########.fr       */
+/*   Updated: 2024/01/10 10:43:54 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,18 +29,19 @@ int	sort_by_letter(t_dirInfos *new, t_dirInfos *list, int reverse)
 
 int	sort_by_time(t_dirInfos *new, t_dirInfos *list, t_options	options)
 {
-	if (options.sort_time && new->dir_stat.st_mtime == list->dir_stat.st_mtime)
+	if (options.sort_time
+		&& new->dir_stat.st_mtime == list->dir_stat.st_mtime)
 	{
-		if (options.sort_time && new->dir_stat.st_mtimespec.tv_nsec \
-			== list->dir_stat.st_mtimespec.tv_nsec)
+		if (options.sort_time && new->dir_stat.st_mtime \
+			== list->dir_stat.st_mtime)
 			return (sort_by_letter(new, list, options.reverse));
 		else
 			return ((options.sort_time && !options.reverse
-					&& new->dir_stat.st_mtimespec.tv_nsec \
-					> list->dir_stat.st_mtimespec.tv_nsec)
+					&& new->dir_stat.st_mtime \
+					> list->dir_stat.st_mtime)
 				|| (options.sort_time && options.reverse
-					&& new->dir_stat.st_mtimespec.tv_nsec \
-					< list->dir_stat.st_mtimespec.tv_nsec));
+					&& new->dir_stat.st_mtime \
+					< list->dir_stat.st_mtime));
 	}
 	return ((options.sort_time && !options.reverse
 			&& new->dir_stat.st_mtime > list->dir_stat.st_mtime)
@@ -48,7 +49,7 @@ int	sort_by_time(t_dirInfos *new, t_dirInfos *list, t_options	options)
 			&& new->dir_stat.st_mtime < list->dir_stat.st_mtime));
 }
 
-int is_same_type(int new_type, int list_type)
+int	is_same_type(int new_type, int list_type)
 {
 	return (new_type == list_type);
 }
@@ -63,8 +64,9 @@ int	sort_arg_by_letter(t_arg_list *new, t_arg_list *list, int reverse)
 		return (1);
 	new_name = ft_str_tolower(new->dir_name);
 	list_name = ft_str_tolower(list->dir_name);
-	ret = (is_same_type(new->is_file, list->is_file) && ((!reverse && strcmp(new_name, list_name) < 0)
-			|| (reverse && strcmp(new_name, list_name) > 0)));
+	ret = (is_same_type(new->is_file, list->is_file)
+			&& ((!reverse && strcmp(new_name, list_name) < 0)
+				|| (reverse && strcmp(new_name, list_name) > 0)));
 	free(new_name);
 	free(list_name);
 	return (ret);
@@ -78,19 +80,20 @@ int	sort_arg_by_time(t_arg_list *new, t_arg_list *list, t_options options)
 		&& new->dir_stat.st_mtime == list->dir_stat.st_mtime)
 	{
 		if (options.sort_time && is_same_type(new->is_file, list->is_file)
-			&& new->dir_stat.st_mtimespec.tv_nsec \
-			== list->dir_stat.st_mtimespec.tv_nsec)
+			&& new->dir_stat.st_mtime \
+			== list->dir_stat.st_mtime)
 			return (sort_arg_by_letter(new, list, options.reverse));
 		else
 			return ((options.sort_time && !options.reverse
-					&& new->dir_stat.st_mtimespec.tv_nsec \
-					> list->dir_stat.st_mtimespec.tv_nsec)
+					&& new->dir_stat.st_mtime \
+					> list->dir_stat.st_mtime)
 				|| (options.sort_time && options.reverse
-					&& new->dir_stat.st_mtimespec.tv_nsec \
-					< list->dir_stat.st_mtimespec.tv_nsec));
+					&& new->dir_stat.st_mtime \
+					< list->dir_stat.st_mtime));
 	}
-	return (is_same_type(new->is_file, list->is_file) && ((options.sort_time && !options.reverse
-			&& new->dir_stat.st_mtime > list->dir_stat.st_mtime)
-		|| (options.sort_time && options.reverse
-			&& new->dir_stat.st_mtime < list->dir_stat.st_mtime)));
+	return (is_same_type(new->is_file, list->is_file)
+		&& ((options.sort_time && !options.reverse
+				&& new->dir_stat.st_mtime > list->dir_stat.st_mtime)
+			|| (options.sort_time && options.reverse
+				&& new->dir_stat.st_mtime < list->dir_stat.st_mtime)));
 }

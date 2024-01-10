@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   dup.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/04/03 11:14:59 by kdelport          #+#    #+#             */
+/*   Updated: 2023/04/03 11:15:09 by kdelport         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_ls.h"
 
 int	dup_owner(t_dirInfos **new, struct passwd *owner_infos)
@@ -14,7 +26,7 @@ int	dup_owner(t_dirInfos **new, struct passwd *owner_infos)
 	return (0);
 }
 
-int dup_gr_name(t_dirInfos **new, struct group *group_infos)
+int	dup_gr_name(t_dirInfos **new, struct group *group_infos)
 {
 	(*new)->gr_name = ft_strdup(group_infos->gr_name);
 	if (!(*new)->gr_name)

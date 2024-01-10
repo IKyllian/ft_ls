@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 10:35:06 by kdelport          #+#    #+#             */
-/*   Updated: 2023/03/06 13:06:36 by kdelport         ###   ########.fr       */
+/*   Updated: 2024/01/10 10:45:44 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,11 @@ int	flag_check(char c, t_options *options, t_arg_list **arg_list)
 	return (0);
 }
 
-int	check_dir_exist(char *path) // 1 = file | 0 = folder
+int	check_dir_exist(char *path)
 {
 	DIR	*p_dir;
-	errno = 0;
 
+	errno = 0;
 	p_dir = opendir(path);
 	if (p_dir == NULL)
 	{
@@ -67,7 +67,7 @@ int	search_options(char **av, t_options *options, t_arg_list **arg_list)
 					return (-1);
 			}
 			else
-				break;
+				break ;
 		}
 	}
 	return (count);
@@ -75,16 +75,16 @@ int	search_options(char **av, t_options *options, t_arg_list **arg_list)
 
 int	parse_exec(char **av, t_options *options, t_arg_list **arg_list)
 {
-	int	i;
-	int	ret;
-	t_arg_list *ret_arg;
+	int			i;
+	int			ret;
+	t_arg_list	*ret_arg;
 
 	i = 0;
 	ret = 0;
 	while (av[++i])
 	{
 		if (ft_strlen(av[i]) > 1 && av[i][0] == '-')
-			continue;
+			continue ;
 		ret = check_dir_exist(av[i]);
 		if (ret != -1)
 		{
@@ -96,7 +96,7 @@ int	parse_exec(char **av, t_options *options, t_arg_list **arg_list)
 				free_arg_list(arg_list);
 				return (-1);
 			}
-		}	
+		}
 	}
 	return (0);
 }
@@ -116,7 +116,7 @@ t_arg_list	*parser(char **av, int ac, t_options *options)
 		if (ret != -1)
 			arg_list = add_arg(".", ret, &arg_list, *options);
 	}
-	else 
+	else
 	{
 		if (parse_exec(av, options, &arg_list) < 0)
 			return (NULL);

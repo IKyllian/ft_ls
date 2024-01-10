@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 12:38:01 by kdelport          #+#    #+#             */
-/*   Updated: 2023/03/06 13:24:04 by kdelport         ###   ########.fr       */
+/*   Updated: 2024/01/10 11:54:15 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,9 @@ char			set_file_type(mode_t mode);
 void			set_column_size(int size[SIZE_LENGTH], t_dirInfos *dir);
 
 void			print_long_format(t_dirInfos *dir, int size[SIZE_LENGTH]);
-void			print_list(t_dirInfos **dirList, t_datas *datas, int isSub);
+void			dir_infos_manager(t_dirInfos **dirList, t_datas *datas, \
+	int isSub);
+char			get_file_attributes(t_dirInfos *dir);
 
 void			main_struct_init(t_datas *datas);
 t_dirInfos		*init_dir_info(char dir_name[256], char *path, int is_sub_dir);
@@ -132,12 +134,12 @@ t_arg_list		*add_sort(t_arg_list **list, t_arg_list **last, \
 t_arg_list		*add_arg(char *path, int is_file, t_arg_list **arg_list, \
 	t_options options);
 
-t_dirInfos	*ft_lstadd_first(t_datas *datas, t_heads_list *heads_list, \
+t_dirInfos		*ft_lstadd_first(t_datas *datas, t_heads_list *heads_list, \
 	t_dirInfos **new, t_subDir_infos *subDirInfos);
 t_dirInfos		*ft_lstadd_second(t_dirInfos **new, t_heads_list *heads_list, \
 	t_options	options);
 
-t_arg_list			*parser(char **av, int ac, t_options *options);
+t_arg_list		*parser(char **av, int ac, t_options *options);
 
 t_dirInfos		*read_dir(t_datas *datas, char *path, int is_sub_dir, \
 	t_dirInfos **dirList);
@@ -145,8 +147,10 @@ t_dirInfos		*read_dir(t_datas *datas, char *path, int is_sub_dir, \
 int				sort_by_letter(t_dirInfos *new, t_dirInfos *list, int reverse);
 int				sort_by_time(t_dirInfos *new, t_dirInfos *list, \
 	t_options options);
-int				sort_arg_by_time(t_arg_list *new, t_arg_list *list, t_options options);
-int				sort_arg_by_letter(t_arg_list *new, t_arg_list *list, int reverse);
+int				sort_arg_by_time(t_arg_list *new, t_arg_list *list, \
+	t_options options);
+int				sort_arg_by_letter(t_arg_list *new, t_arg_list \
+	*list, int reverse);
 
 t_dirInfos		*read_dir(t_datas *datas, char *path, int is_sub_dir, \
 	t_dirInfos **dirList);
@@ -159,7 +163,8 @@ t_dirInfos		*fill_variable(t_subDir_infos *sub_dir_infos, \
 
 char			*join_path(char *path);
 t_dirInfos		*create_file(char **init_path, char *path);
-int				skip_dir(DIR **p_dir, struct dirent **currt_dir, t_datas *datas);
+int				skip_dir(DIR **p_dir, struct dirent **currt_dir, \
+	t_datas *datas);
 void			loop_end(char **str, struct dirent **currt_dir, DIR **p_dir);
 
 #endif

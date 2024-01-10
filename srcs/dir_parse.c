@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/28 10:11:55 by kdelport          #+#    #+#             */
-/*   Updated: 2023/03/06 10:38:26 by kdelport         ###   ########.fr       */
+/*   Updated: 2023/04/03 11:09:28 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ t_dirInfos	*browse_dir(t_datas *datas, DIR **p_dir, t_dirInfos **dirList, \
 		if (datas->options.list_subdir && S_ISDIR(heads.ret->dir_stat.st_mode)
 			&& !is_untrack_folder(currt_dir->d_name)
 			&& read_dir(datas, str, 1, &heads.ret) == NULL)
-				return (heads.list);
+			return (heads.list);
 		loop_end(&str, &currt_dir, p_dir);
 	}
 	return (heads.list);

@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 10:35:10 by kdelport          #+#    #+#             */
-/*   Updated: 2023/03/06 13:23:14 by kdelport         ###   ########.fr       */
+/*   Updated: 2024/01/10 11:00:26 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,13 @@
 void	print_dir_name(char *name, mode_t mode)
 {
 	if (S_ISDIR(mode))
-			ft_printf("%s%s%s", COLOR_CYAN, name, COLOR_DEFAULT);
+		ft_printf("%s%s%s", COLOR_CYAN, name, COLOR_DEFAULT);
 	else if (S_ISLNK(mode))
 		ft_printf("%s%s%s", COLOR_PURPLE, name, COLOR_DEFAULT);
 	else if (mode & S_IXUSR)
 		ft_printf("%s%s%s", COLOR_GREEN, name, COLOR_DEFAULT);
 	else
 		ft_printf("%s", name);
-}
-
-char	get_file_attributes(t_dirInfos *dir)
-{
-	char	buff2[101];
-
-	if (listxattr(dir->path, buff2, sizeof(buff2), XATTR_NOFOLLOW) > 0)
-		return ('@');
-	return (' ');
 }
 
 void	print_items(t_dirInfos *dir, int size[SIZE_LENGTH], char *dir_time, \
@@ -48,7 +39,8 @@ void	print_items(t_dirInfos *dir, int size[SIZE_LENGTH], char *dir_time, \
 	{
 		ft_bzero(buff, NAME_MAX + 1);
 		readlink(dir->path, buff, NAME_MAX + 1);
-		ft_printf("%s%s%s -> %s", COLOR_PURPLE, dir->dir_name, COLOR_DEFAULT, buff);
+		ft_printf("%s%s%s -> %s", COLOR_PURPLE, dir->dir_name, \
+			COLOR_DEFAULT, buff);
 	}
 	else
 		print_dir_name(dir->dir_name, dir->dir_stat.st_mode);
@@ -83,7 +75,7 @@ void	print_dir_infos(int is_sub, t_dirInfos **list, t_dirInfos	**head, \
 		ft_printf("total %i\n", (*list)->blocks_size / 2);
 }
 
-void	print_list(t_dirInfos **dirList, t_datas *datas, int is_sub)
+void	dir_infos_manager(t_dirInfos **dirList, t_datas *datas, int is_sub)
 {
 	t_dirInfos	*list;
 	t_dirInfos	*head;
@@ -103,7 +95,7 @@ void	print_list(t_dirInfos **dirList, t_datas *datas, int is_sub)
 	while (head)
 	{
 		if (head->sub_dir)
-			print_list(&head, datas, 1);
+			dir_infos_manager(&head, datas, 1);
 		head = head->next;
 	}
 }

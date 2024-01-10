@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   arg_list_utils.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/04/03 11:15:39 by kdelport          #+#    #+#             */
+/*   Updated: 2023/04/03 11:16:31 by kdelport         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_ls.h"
 
-t_arg_list *create_arg(char *arg, int is_file)
+t_arg_list	*create_arg(char *arg, int is_file)
 {
 	t_arg_list	*new;
 	struct stat	stat_buffer;
@@ -20,7 +32,8 @@ t_arg_list *create_arg(char *arg, int is_file)
 	return (new);
 }
 
-t_arg_list *add_sort(t_arg_list **list, t_arg_list **last, t_arg_list **begin, t_arg_list **new)
+t_arg_list	*add_sort(t_arg_list **list, t_arg_list **last, \
+	t_arg_list **begin, t_arg_list **new)
 {
 	(*new)->next = *list;
 	if ((*last) != NULL)
@@ -31,13 +44,14 @@ t_arg_list *add_sort(t_arg_list **list, t_arg_list **last, t_arg_list **begin, t
 	return (*new);
 }
 
-t_arg_list *first_arg_node(t_arg_list **arg_list, t_arg_list **new)
+t_arg_list	*first_arg_node(t_arg_list **arg_list, t_arg_list **new)
 {
 	*arg_list = *new;
 	return (*new);
 }
 
-t_arg_list *add_arg(char *path, int is_file, t_arg_list **arg_list, t_options options)
+t_arg_list	*add_arg(char *path, int is_file, \
+	t_arg_list **arg_list, t_options options)
 {
 	t_arg_list	*list;
 	t_arg_list	*last;

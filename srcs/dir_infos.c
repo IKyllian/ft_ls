@@ -16,7 +16,7 @@ void	setuid_perm(struct stat dir_stat, char str[SIZE_PERM])
 {
 	if (!(dir_stat.st_mode & S_IXUSR) && dir_stat.st_mode & S_ISUID)
 		str[3] = 'S';
-	else if ( dir_stat.st_mode & S_ISUID)
+	else if (dir_stat.st_mode & S_ISUID)
 		str[3] = 's';
 }
 

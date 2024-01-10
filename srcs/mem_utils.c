@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 10:35:00 by kdelport          #+#    #+#             */
-/*   Updated: 2023/02/27 12:59:37 by kdelport         ###   ########.fr       */
+/*   Updated: 2023/04/03 11:19:38 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	free_arg_list(t_arg_list **arg_list)
 	*arg_list = NULL;
 }
 
-t_dirInfos *dir_error(t_dirInfos **head, char *ptr, t_datas *datas)
+t_dirInfos	*dir_error(t_dirInfos **head, char *ptr, t_datas *datas)
 {
 	if (ptr)
 		free(ptr);
