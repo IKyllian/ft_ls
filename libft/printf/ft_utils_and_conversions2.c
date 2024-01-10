@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   ft_utils_and_conversions2.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kdelport <kdelport@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/28 12:37:48 by kdelport          #+#    #+#             */
-/*   Updated: 2021/01/05 10:45:52 by kdelport         ###   ########lyon.fr   */
+/*   Updated: 2023/02/27 13:59:51 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libft.h"
 
-int		is_flags(char c)
+int	is_flags(char c)
 {
-	if (c == '0' || c == '-' || c == '*' || c == '.' ||
-		(c >= 48 && c <= 57))
+	if (c == '0' || c == '-' || c == '*' || c == '.'
+		|| (c >= 48 && c <= 57))
 		return (1);
 	else
 		return (0);

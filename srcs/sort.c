@@ -1,24 +1,99 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   sort.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/02/27 10:33:52 by kdelport          #+#    #+#             */
+/*   Updated: 2024/01/10 10:43:54 by kdelport         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_ls.h"
 
-int sortByLetter(t_dirInfos *new, t_dirInfos *list, int reverse)
+int	sort_by_letter(t_dirInfos *new, t_dirInfos *list, int reverse)
 {
-    return ((!reverse && strcmp(new->dirName, list->dirName) < 0)
-        || (reverse && strcmp(new->dirName, list->dirName) > 0));
+	char	*new_name;
+	char	*list_name;
+	int		ret;
+
+	new_name = ft_str_tolower(new->dir_name);
+	list_name = ft_str_tolower(list->dir_name);
+	ret = ((!reverse && strcmp(new_name, list_name) < 0)
+			|| (reverse && strcmp(new_name, list_name) > 0));
+	free(new_name);
+	free(list_name);
+	return (ret);
 }
 
-int sortByTime(t_dirInfos *new, t_dirInfos *list, t_options	options)
+int	sort_by_time(t_dirInfos *new, t_dirInfos *list, t_options	options)
 {
-    if (options.sortTime && new->dirStat.st_mtime == list->dirStat.st_mtime) {
-        // if (new->dirStat.st_atime == list->dirStat.st_atime) {
-        //     if (new->dirStat.st_ctime == list->dirStat.st_ctime)
-                return (sortByLetter(new, list, !options.reverse));
-        //    else
-        //     return ((options.sortTime && !options.reverse && new->dirStat.st_ctime > list->dirStat.st_ctime)
-        //         || (options.sortTime && options.reverse && new->dirStat.st_ctime < list->dirStat.st_ctime));
-        // } else
-        //     return ((options.sortTime && !options.reverse && new->dirStat.st_atime > list->dirStat.st_atime)
-        //         || (options.sortTime && options.reverse && new->dirStat.st_atime < list->dirStat.st_atime));
-    }   
-    return ((options.sortTime && !options.reverse && new->dirStat.st_mtime > list->dirStat.st_mtime)
-        || (options.sortTime && options.reverse && new->dirStat.st_mtime < list->dirStat.st_mtime));
+	if (options.sort_time
+		&& new->dir_stat.st_mtime == list->dir_stat.st_mtime)
+	{
+		if (options.sort_time && new->dir_stat.st_mtime \
+			== list->dir_stat.st_mtime)
+			return (sort_by_letter(new, list, options.reverse));
+		else
+			return ((options.sort_time && !options.reverse
+					&& new->dir_stat.st_mtime \
+					> list->dir_stat.st_mtime)
+				|| (options.sort_time && options.reverse
+					&& new->dir_stat.st_mtime \
+					< list->dir_stat.st_mtime));
+	}
+	return ((options.sort_time && !options.reverse
+			&& new->dir_stat.st_mtime > list->dir_stat.st_mtime)
+		|| (options.sort_time && options.reverse
+			&& new->dir_stat.st_mtime < list->dir_stat.st_mtime));
+}
+
+int	is_same_type(int new_type, int list_type)
+{
+	return (new_type == list_type);
+}
+
+int	sort_arg_by_letter(t_arg_list *new, t_arg_list *list, int reverse)
+{
+	char	*new_name;
+	char	*list_name;
+	int		ret;
+
+	if (new->is_file && !list->is_file)
+		return (1);
+	new_name = ft_str_tolower(new->dir_name);
+	list_name = ft_str_tolower(list->dir_name);
+	ret = (is_same_type(new->is_file, list->is_file)
+			&& ((!reverse && strcmp(new_name, list_name) < 0)
+				|| (reverse && strcmp(new_name, list_name) > 0)));
+	free(new_name);
+	free(list_name);
+	return (ret);
+}
+
+int	sort_arg_by_time(t_arg_list *new, t_arg_list *list, t_options options)
+{
+	if (new->is_file && !list->is_file)
+		return (1);
+	if (options.sort_time && is_same_type(new->is_file, list->is_file)
+		&& new->dir_stat.st_mtime == list->dir_stat.st_mtime)
+	{
+		if (options.sort_time && is_same_type(new->is_file, list->is_file)
+			&& new->dir_stat.st_mtime \
+			== list->dir_stat.st_mtime)
+			return (sort_arg_by_letter(new, list, options.reverse));
+		else
+			return ((options.sort_time && !options.reverse
+					&& new->dir_stat.st_mtime \
+					> list->dir_stat.st_mtime)
+				|| (options.sort_time && options.reverse
+					&& new->dir_stat.st_mtime \
+					< list->dir_stat.st_mtime));
+	}
+	return (is_same_type(new->is_file, list->is_file)
+		&& ((options.sort_time && !options.reverse
+				&& new->dir_stat.st_mtime > list->dir_stat.st_mtime)
+			|| (options.sort_time && options.reverse
+				&& new->dir_stat.st_mtime < list->dir_stat.st_mtime)));
 }

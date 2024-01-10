@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_operands_string_flags.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kdelport <kdelport@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/22 12:08:17 by kdelport          #+#    #+#             */
-/*   Updated: 2021/01/04 10:01:17 by kdelport         ###   ########lyon.fr   */
+/*   Updated: 2023/02/27 14:04:05 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ void	ope_space_string_suff(t_flags flags, int *count, int len)
 	}
 	else if (flags.has_neg && flags.dot_val)
 	{
-		if (flags.len_is_neg || flags.len_field >= len ||
-			(!flags.len_field && (flags.type == 'c' || flags.type == '%')))
+		if (flags.len_is_neg || flags.len_field >= len
+			|| (!flags.len_field && (flags.type == 'c' || flags.type == '%')))
 			fill_space(' ', (flags.dot_val - len), count);
 		else
 		{
@@ -69,8 +69,8 @@ void	ope_space_string_suff(t_flags flags, int *count, int len)
 
 void	print_string(t_flags flags, int *count, char *str, int len)
 {
-	int i;
-	int size;
+	int	i;
+	int	size;
 
 	i = 0;
 	size = 0;

@@ -7,11 +7,16 @@ LST_SRCS =  main.c \
 			utils.c \
 			dir_infos.c \
 			mem_utils.c \
+			print_utils.c \
 			print.c \
 			struct_utils.c \
 			parser.c \
 			lst_utils.c \
-			sort.c
+			sort.c \
+			dir_parse.c \
+			arg_list_utils.c \
+			dup.c \
+			dir_parse_utils.c
 
 LST_OBJS = $(LST_SRCS:.c=.o)
 
@@ -31,10 +36,10 @@ all : libft $(NAME)
 
 $(DIR_OBJS)/%.o : $(DIR_FILES)/%.c $(HEADER) $(LIB_PATH)$(LIB_NAME)
 	@mkdir -p $(DIR_OBJS) $(addprefix $(DIR_OBJS)/,$(LST))
-	$(CC) $(FLAGS) -I inc -I $(LIB_PATH) -c $< -o $@
+	$(CC) -c $(FLAGS) -I ./inc/ -I $(LIB_PATH) $< -o $@
 
 $(NAME) : $(LIB_PATH)$(LIB_NAME) $(OBJS) $(HEADER)
-		$(CC) $(FLAGS) -L $(LIB_PATH) -lft -o $@ $(OBJS)
+		@gcc $(FLAGS) $(OBJS) -I ./inc/ -I $(LIB_PATH) -L libft/ -lft -o $(NAME)
 
 libft :
 		make -C $(LIB_PATH)

@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   ft_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kdelport <kdelport@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/05 13:18:53 by kdelport          #+#    #+#             */
-/*   Updated: 2021/01/05 14:03:10 by kdelport         ###   ########lyon.fr   */
+/*   Updated: 2023/02/27 13:59:26 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libft.h"
 
-int		ft_count_numbers(char **str)
+int	ft_count_numbers(char **str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while ((*str)[i] && ((*str)[i] >= 48 && (*str)[i] <= 57))
@@ -24,7 +24,7 @@ int		ft_count_numbers(char **str)
 	return (i);
 }
 
-int		ft_convert(char **str, va_list list, int *count, t_flags *flag)
+int	ft_convert(char **str, va_list list, int *count, t_flags *flag)
 {
 	if (*(*str) == 's')
 		to_string(list, count, *flag);

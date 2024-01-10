@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putnbr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kdelport <kdelport@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/11 12:16:26 by kdelport          #+#    #+#             */
-/*   Updated: 2021/01/04 12:01:23 by kdelport         ###   ########lyon.fr   */
+/*   Updated: 2023/02/27 13:56:57 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	ft_putnbr(int n, int *count)
 {
-	long nb;
+	long	nb;
 
 	nb = n;
 	if (nb == -2147483648)
