@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 12:38:01 by kdelport          #+#    #+#             */
-/*   Updated: 2024/01/10 11:54:15 by kdelport         ###   ########.fr       */
+/*   Updated: 2024/01/11 11:07:39 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ char			set_file_type(mode_t mode);
 void			set_column_size(int size[SIZE_LENGTH], t_dirInfos *dir);
 
 void			print_long_format(t_dirInfos *dir, int size[SIZE_LENGTH]);
+void			print_date(t_dirInfos *dir, char *dir_time);
 void			dir_infos_manager(t_dirInfos **dirList, t_datas *datas, \
 	int isSub);
 char			get_file_attributes(t_dirInfos *dir);

@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 10:35:10 by kdelport          #+#    #+#             */
-/*   Updated: 2024/01/10 11:00:26 by kdelport         ###   ########.fr       */
+/*   Updated: 2024/01/11 11:06:43 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	print_items(t_dirInfos *dir, int size[SIZE_LENGTH], char *dir_time, \
 	ft_printf("%-*s ", size[1], dir->owner);
 	ft_printf(" %-*s ", size[2], dir->gr_name);
 	ft_printf(" %*i ", size[3], dir->dir_stat.st_size);
-	ft_printf("%.12s ", dir_time);
+	print_date(dir, dir_time);
 	if (permisions[0] == 'l')
 	{
 		ft_bzero(buff, NAME_MAX + 1);
