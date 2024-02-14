@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 12:38:01 by kdelport          #+#    #+#             */
-/*   Updated: 2024/01/11 11:07:39 by kdelport         ###   ########.fr       */
+/*   Updated: 2024/02/14 14:03:37 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@
 # define COLOR_GREEN	"\033[1;32m"
 # define COLOR_PURPLE	"\033[0;35m"
 
-typedef struct s_options {
+typedef struct s_options
+{
 	int	reverse;
 	int	sort_time;
 	int	show_hidden;
@@ -62,13 +63,15 @@ typedef struct s_options {
 	int	list_subdir;
 }	t_options;
 
-typedef struct s_subDir_infos {
+typedef struct s_subDir_infos
+{
 	int		is_sub_dir;
 	int		is_first_dir;
 	char	*init_path;
 }			t_subDir_infos;
 
-typedef struct s_dirInfos {
+typedef struct s_dirInfos
+{
 	struct stat			dir_stat;
 	char				*dir_name;
 	char				*path;
@@ -81,20 +84,23 @@ typedef struct s_dirInfos {
 	struct s_dirInfos	*next;
 }						t_dirInfos;
 
-typedef struct s_arg_list {
+typedef struct s_arg_list
+{
 	struct stat			dir_stat;
 	char				*dir_name;
 	int					is_file;
 	struct s_arg_list	*next;
 }				t_arg_list;
 
-typedef struct s_heads_list {
+typedef struct s_heads_list
+{
 	t_dirInfos	*list;
 	t_dirInfos	*ret;
 	t_dirInfos	*dir_parent;
 }				t_heads_list;
 
-typedef struct s_datas {
+typedef struct s_datas
+{
 	t_options	options;
 	int			size[SIZE_LENGTH];
 	int			error;
