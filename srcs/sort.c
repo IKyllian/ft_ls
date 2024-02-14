@@ -6,7 +6,7 @@
 /*   By: kdelport <kdelport@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/27 10:33:52 by kdelport          #+#    #+#             */
-/*   Updated: 2024/01/11 10:28:16 by kdelport         ###   ########.fr       */
+/*   Updated: 2024/02/14 13:13:37 by kdelport         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ int	sort_by_letter(t_dirInfos *new, t_dirInfos *list, int reverse)
 
 	new_name = ft_str_tolower(new->dir_name);
 	list_name = ft_str_tolower(list->dir_name);
-	ret = ((!reverse && strcmp(new_name, list_name) < 0)
-			|| (reverse && strcmp(new_name, list_name) > 0));
+	ret = ((!reverse && ft_strcmp(new_name, list_name) < 0)
+			|| (reverse && ft_strcmp(new_name, list_name) > 0));
 	free(new_name);
 	free(list_name);
 	return (ret);
@@ -65,8 +65,8 @@ int	sort_arg_by_letter(t_arg_list *new, t_arg_list *list, int reverse)
 	new_name = ft_str_tolower(new->dir_name);
 	list_name = ft_str_tolower(list->dir_name);
 	ret = (is_same_type(new->is_file, list->is_file)
-			&& ((!reverse && strcmp(new_name, list_name) < 0)
-				|| (reverse && strcmp(new_name, list_name) > 0)));
+			&& ((!reverse && ft_strcmp(new_name, list_name) < 0)
+				|| (reverse && ft_strcmp(new_name, list_name) > 0)));
 	free(new_name);
 	free(list_name);
 	return (ret);
